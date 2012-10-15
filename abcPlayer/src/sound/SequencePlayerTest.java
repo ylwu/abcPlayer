@@ -43,9 +43,48 @@ public class SequencePlayerTest {
         player.addNote(new Pitch('C').toMidiNote(), 168, 24);
         
         player.play();
-        
-        System.out.println(player);
  
+    }
+    @Test
+    public void piece2test() throws MidiUnavailableException, InvalidMidiDataException{
+        
+        SequencePlayer player = new SequencePlayer(200, 12);
+        
+        player.addNote(new Pitch('F').transpose(1).toMidiNote(),0,6);
+        player.addNote(new Pitch('E').octaveTranspose(1).transpose(1).toMidiNote(),0,6);
+        player.addNote(new Pitch('F').toMidiNote(),6,6);
+        player.addNote(new Pitch('E').octaveTranspose(1).toMidiNote(),6,6);
+        player.addNote(new Pitch('F').toMidiNote(),18,6);
+        player.addNote(new Pitch('E').octaveTranspose(1).toMidiNote(),18,6);
+        player.addNote(new Pitch('F').toMidiNote(),30,6);
+        player.addNote(new Pitch('C').octaveTranspose(1).toMidiNote(),30,6);
+        player.addNote(new Pitch('F').toMidiNote(),36,12);
+        player.addNote(new Pitch('E').octaveTranspose(1).toMidiNote(),36,12);
+        player.addNote(new Pitch('G').toMidiNote(),48,12);
+        player.addNote(new Pitch('B').octaveTranspose(1).toMidiNote(),48,12);
+        player.addNote(new Pitch('G').octaveTranspose(1).toMidiNote(),48,12);
+        player.addNote(new Pitch('G').toMidiNote(),72,12);
+        player.addNote(new Pitch('C').octaveTranspose(1).toMidiNote(),96,18);
+        player.addNote(new Pitch('G').toMidiNote(),114,6);
+        player.addNote(new Pitch('E').toMidiNote(),132,12);
+        player.addNote(new Pitch('E').toMidiNote(),144,6);
+        player.addNote(new Pitch('A').octaveTranspose(1).toMidiNote(),150,12);
+        player.addNote(new Pitch('B').octaveTranspose(1).toMidiNote(),162,12);
+        player.addNote(new Pitch('B').octaveTranspose(1).transpose(-1).toMidiNote(),174,6);
+        player.addNote(new Pitch('A').octaveTranspose(1).toMidiNote(),180,12);
+        player.addNote(new Pitch('G').toMidiNote(),192,8);
+        player.addNote(new Pitch('E').octaveTranspose(1).toMidiNote(),200,8);
+        player.addNote(new Pitch('G').octaveTranspose(1).toMidiNote(),208,8);
+        player.addNote(new Pitch('A').octaveTranspose(2).toMidiNote(),216,12);
+        player.addNote(new Pitch('F').octaveTranspose(1).toMidiNote(),228,6);
+        player.addNote(new Pitch('G').octaveTranspose(1).toMidiNote(),234,6);
+        player.addNote(new Pitch('E').octaveTranspose(1).toMidiNote(),246,12);
+        player.addNote(new Pitch('C').octaveTranspose(1).toMidiNote(),258,6);
+        player.addNote(new Pitch('D').octaveTranspose(1).toMidiNote(),264,6);
+        player.addNote(new Pitch('B').octaveTranspose(1).toMidiNote(),270,9);
+
+        player.play();
+        
     }
     
 }
