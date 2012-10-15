@@ -1,0 +1,23 @@
+Music = (Meter|Repeat)*
+
+Meter = Notes LINE
+Notes = (Single|Chord|Tuplet|Triplet|Rest)*
+Single = ACCIDENTAL? NOTE OCTAVE* Length?
+Length = ([/d]*[///]*[/d]*)+
+Chord = LEFTBRA Single+ RIGHTBRA
+Tuplet = LEFTPAR [2] Single{2}
+Triplet = LEFTPAR [3] Single{3}
+Rest = [z] Length?
+
+Repeat = COLON Notes LINE Altend? Notes COLON LINE (Altend Notes LINE)?
+Altend = LEFTBRA [/d]
+
+
+LINE: |
+ACCIDENTAL: ^ or _
+NOTE: a-gA-G
+OCTAVE: ' or ,
+LEFTBRA: [
+RIGHTBRA: ]
+LEFTPAR: (
+COLON: :
