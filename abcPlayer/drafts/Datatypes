@@ -1,0 +1,35 @@
+Data types:
+
+Class Token
+Class Header
+Interface Music
+
+Token:
+-Types: {NOTE, LINE, ACCIDENTAL, OCTAVE, FRACTION, LEFTBRA, RIGHTBRA, LEFTPAR, REST}
+-fields: String value, String originalString
+
+Header:
+-fields: String title, String composer, float length, float meter, int tempo, String key, String[] voice
+
+Music:
+-Class Sheet
+-Class Meter
++-fields: Notes notes
+-Class Repeat
++-fields: Meter rep1, Meter rep2, Meter alter
+-Class Notes
++-fields: Token[] tokens
+-Class Single
++-fields: Token token, boolean hasAcc, boolean hasOctave, Length length
+-Class Length
++-fields: float value
+-Class Chord
++-fields: Single[] singles
+-Class Tuplet
++-fields: Single[2] singles
+-Class Triplet
++-fields: Single[3] singles
+-Class Rest
++-fields: float length
+-Class Altend
++-fields: int order

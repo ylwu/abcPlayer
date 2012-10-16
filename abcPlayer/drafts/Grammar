@@ -1,4 +1,17 @@
-Music = (Meter|Repeat)*
+File = Header Sheet
+
+Header = Index Title (?: Composer|Length|Meter|Tempo|(Voice Voice+)){n=number of incidences} Key
+
+Index = [X:] [/d] [/r|/n]
+Title = [T:] [/S]+ [/r|/n]
+Composer = [C:] [/S]+ [/r|/n]
+Length = [L:] [1][//][/d] [/r|/n]
+Meter = [M:] ([/d][//][/d])|[C] [/r|/n]
+Tempo = [Q:] [/d]* [/r|/n]
+Key = [C|D|E|F|G|A|B][m|M]? [/r|/n]
+Voice = [V:] [/S]+ [/r|/n]
+
+Sheet = (Meter|Repeat)*
 
 Meter = Notes LINE
 Notes = (Single|Chord|Tuplet|Triplet|Rest)*
