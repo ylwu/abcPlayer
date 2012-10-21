@@ -27,6 +27,10 @@ public class Token {
         this.type = type;
         this.str = str;    
     }
-
+    
+    @Override
+    public String toString(){
+        return str;
+    }
 
 }
