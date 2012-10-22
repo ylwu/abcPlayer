@@ -14,7 +14,7 @@ public class Token {
      *  COLON: :
      *  Rest: z
      *  LENGTH: number that represent the length of the note, such as 2, 1/3.
-     *  VOICE: v (followed by the name of the voice)
+     *  VOICE: V (followed by the name of the voice)
     */
     public static enum Type{
         LINE,ACCIDENTAL,NOTE,OCTAVE,LEFTBRA,RIGHTBRA,LEFTPAR,COLON,REST,LENGTH,VOICE

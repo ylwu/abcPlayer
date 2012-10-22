@@ -1,17 +1,14 @@
 package player;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Lexer {
     public Header header;
     public ArrayList<Token> tokenList;
     private String state;
-    private String lastHeader;
     private int index;
     private int currentStrLength;
     private String currentStr;
@@ -23,11 +20,21 @@ public class Lexer {
     }
         
     public void tokenize(String file) throws IOException{
-        FileInputStream fstream = new FileInputStream(file);
-        DataInputStream in = new DataInputStream(fstream);
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        //FileInputStream fstream = new FileInputStream(file);
+        //DataInputStream in = new DataInputStream(fstream);
+        //BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        /*
+        Use the lines above if you want to load the file from an absolute path in file system,
+        eg."/Users/weidadianli/Desktop/6.005/projects/Project_1/abcPlayer/sample_abc/piece1.abc"
+        */
+        String default_path = "sample_abc/";
+        BufferedReader br = new BufferedReader(new FileReader(default_path + file));
+        /*
+        Use the lines above if you want to load the file from java package.
+        The default package to store input file is "/smaple_abc"
+        */
         
-        String firstLine = br.readLine();
+        String firstLine = br.readLine().trim();
         if (firstLine.substring(0, 2).equals("X:")){
             header.X = firstLine.substring(2).trim();
         } else {
@@ -35,7 +42,7 @@ public class Lexer {
                     "The first field in the header must be the index number ('X').");
         }
         
-        String secondLine = br.readLine();
+        String secondLine = br.readLine().trim();
         if (secondLine.substring(0, 2).equals("T:")){
             header.T = secondLine.substring(2);
         } else {
@@ -46,47 +53,34 @@ public class Lexer {
         String strLine;
         while (state == "header"){
            strLine = br.readLine();
-               String first = strLine.substring(0,1);
-               if (first.equals("C")){
-                   String second = strLine.substring(1,2);
-                   if (second.equals(":")){
-                       header.C = strLine.substring(2).trim();
-                   } else {
-                       state = "body";
-                       tokenizeLine(strLine);
-                   }                
-               } else if (first.equals("K")){
+           if (strLine.equals("")){              
+           } else {
+               strLine = strLine.trim();
+               String pfx = strLine.substring(0,2);
+               if (pfx.equals("C:")){
+                   header.C = strLine.substring(2).trim();            
+               } else if (pfx.equals("K:")){
                    header.K = strLine.substring(2).trim();
-                   lastHeader = "K";
                    state = "body";
-               } else if (first.equals("L")){
+               } else if (pfx.equals("L:")){
                    header.L = strLine.substring(2).trim();
-                   lastHeader = "L";
-               } else if (first.equals("M")){
+               } else if (pfx.equals("M:")){
                    header.M = strLine.substring(2).trim();
-                   lastHeader = "M";
-               } else if (first.equals("Q")){
+               } else if (pfx.equals("Q:")){
                    header.Q = strLine.substring(2).trim();
-                   lastHeader = "Q";
-               } else if (first.equals(" ")){
-                   
-               } else if (first.equals("V")){
+               } else if (pfx.equals("V:")){
                    header.V.add(strLine.substring(2).trim());
                }
                else {
-                   state = "body";
-                   tokenizeLine(strLine);
+                   throw new IllegalArgumentException(
+                           "The last field in the header must be the index number ('K').");
                }               
            }  
-        
-        //state == Body
-        if (!lastHeader.equals("K")){
-            throw new IllegalArgumentException(
-                    "The last field in the header must be the index number ('K').");
         }
         
         while ((strLine = br.readLine()) != null){
-            if (strLine.substring(0,1).equals("V")){
+            if (strLine.equals("")){
+            } else if (strLine.substring(0,1).equals("V")){
                 tokenList.add(new Token(strLine.substring(2),Token.Type.VOICE));
             } else {    
             tokenizeLine(strLine.trim());
