@@ -19,6 +19,8 @@ public class Lexer {
         header = new Header();
     }
         
+    //TODO: deal with alternative paths
+    //TODO: decide what to do about legal/illegal whitespace characters in input  
     public void tokenize(String file) throws IOException{
         //FileInputStream fstream = new FileInputStream(file);
         //DataInputStream in = new DataInputStream(fstream);
@@ -80,7 +82,7 @@ public class Lexer {
         
         while ((strLine = br.readLine()) != null){
             if (strLine.equals("")){
-            } else if (strLine.substring(0,1).equals("V")){
+            } else if (strLine.substring(0,2).equals("V:")){
                 tokenList.add(new Token(strLine.substring(2),Token.Type.VOICE));
             } else {    
             tokenizeLine(strLine.trim());
@@ -128,10 +130,11 @@ public class Lexer {
             }
             tokenList.add(new Token(currentStr.substring(index,index + x -1),Token.Type.LENGTH));
             index += x - 2;
-        } else if (s.matches("%")){
+        } else if (s.matches("%")){  //what is this?
             index = currentStrLength -1;
         } else if (s.equals(" ")){
         } else {
+            System.out.println(s);
             throw new IllegalArgumentException("unrecognized character");
             
         }
