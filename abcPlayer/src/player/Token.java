@@ -5,7 +5,7 @@ public class Token {
     /**
      *  All the types of token that can be made
      *  LINE: |
-     *  ACCIDENTAL: ^ or _
+     *  ACCIDENTAL: ^ or _ or =
      *  NOTE: a-gA-G
      *  OCTAVE: ' or ,
      *  LEFTBRA: [
