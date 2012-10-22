@@ -22,4 +22,5 @@ Single = ACCIDENTAL? NOTE OCTAVE* LENGTH?
 Chord = LEFTBRA Single+ RIGHTBRA
 Tuplet = LEFTPAR [2] Single{2}
 Triplet = LEFTPAR [3] Single{3}
+Quadruplet = LEFTPAR [4] Single{4}
 Rest = [z] Length?
