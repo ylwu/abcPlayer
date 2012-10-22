@@ -132,7 +132,6 @@ public class Lexer {
             index = currentStrLength -1;
         } else if (s.equals(" ")){
         } else {
-            System.out.println(s);
             throw new IllegalArgumentException("unrecognized character");
             
         }
