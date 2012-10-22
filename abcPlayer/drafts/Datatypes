@@ -5,11 +5,12 @@ Class Header
 Interface Music
 
 Token:
--Types: {NOTE, LINE, ACCIDENTAL, OCTAVE, FRACTION, LEFTBRA, RIGHTBRA, LEFTPAR, REST}
--fields: String value, String originalString
+-Types: {NOTE, LINE, ACCIDENTAL, OCTAVE, FRACTION, LEFTBRA, RIGHTBRA, LEFTPAR, REST, LENGTH, VOICE}
+-fields: String str, Type type
 
 Header:
--fields: String title, String composer, float length, float meter, int tempo, String key, String[] voice
+-fields: String X (Index) String T(title), String C(composer), String L(default note length), 
+         String M(meter), String Q(tempo), String K(key), String[] V(voice)
 
 Music:
 -Class Sheet
