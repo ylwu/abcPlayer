@@ -21,7 +21,7 @@ public class Lexer {
         
     //TODO: deal with alternative paths
     //TODO: decide what to do about legal/illegal whitespace characters in input  
-    public void tokenize(String file) throws IOException{
+    private void tokenize(String file) throws IOException{
         //FileInputStream fstream = new FileInputStream(file);
         //DataInputStream in = new DataInputStream(fstream);
         //BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -140,7 +140,8 @@ public class Lexer {
             while (index + x <= currentStrLength && currentStr.substring(index,index + x).matches("[0-9]*\\/?[0-9]*")){
                 x += 1;
             }
-            tokenList.add(new Token(currentStr.substring(index,index + x -1),Token.Type.LENGTH));
+            tokenList.add(new Token(lengthToNumber(currentStr.substring(index,index + x -1)),
+                    Token.Type.LENGTH));
             index += x - 2;
         } else if (s.matches("%")){  
             index = currentStrLength -1;
@@ -158,7 +159,6 @@ public class Lexer {
         String TokenString = "";
         for (Token t : tokenList){
             TokenString += t.toString();
-            TokenString += " ";
         }
         return TokenString;
     }
@@ -166,6 +166,14 @@ public class Lexer {
     @Override
     public String toString(){
         return "Header: " + header.toString() + " $$$ " + tokenString();
+    }
+    
+    private double lengthToNumber(String str){
+        
+    }
+    
+    public ArrayList<Token> getTokenList(){
+        return tokenList;
     }
 
 }
