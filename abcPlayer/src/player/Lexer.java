@@ -158,7 +158,6 @@ public class Lexer {
         String TokenString = "";
         for (Token t : tokenList){
             TokenString += t.toString();
-            TokenString += " ";
         }
         return TokenString;
     }
