@@ -137,8 +137,7 @@ public class Lexer {
             tokenList.add(new Token(s,Token.Type.REST));
         } else if (s.matches("[0-9]|\\/")){
             int x = 1;
-            while (currentStr.substring(index,index + x).matches("[0-9]*\\/?[0-9]*") 
-                    && index + x <= currentStrLength){
+            while (index + x <= currentStrLength && currentStr.substring(index,index + x).matches("[0-9]*\\/?[0-9]*")){
                 x += 1;
             }
             tokenList.add(new Token(currentStr.substring(index,index + x -1),Token.Type.LENGTH));
