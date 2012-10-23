@@ -53,7 +53,6 @@ public class LexerTest {
                 l.toString());
     }
     
-    @Test
     public void TestLegalBlahplets() throws IOException{
         Lexer l = new Lexer();
         l.tokenize("lexer_legal_plets.abc");

@@ -19,9 +19,7 @@ public class Lexer {
         header = new Header();
     }
         
-    //TODO: deal with alternative paths
-    //TODO: decide what to do about legal/illegal whitespace characters in input  
-    private void tokenize(String file) throws IOException{
+    public void tokenize(String file) throws IOException{
         //FileInputStream fstream = new FileInputStream(file);
         //DataInputStream in = new DataInputStream(fstream);
         //BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -81,14 +79,13 @@ public class Lexer {
         }
         
         while ((strLine = br.readLine()) != null){
-            if (strLine.equals("")){
+            if (strLine.equals("")){  
+            } else if (strLine.substring(0,1).equals("%")){
             } else if (strLine.substring(0,2).equals("V:")){
-                tokenList.add(new Token(strLine.substring(2),Token.Type.VOICE));
-            } else {    
-            tokenizeLine(strLine.trim());
+               tokenList.add(new Token(strLine.substring(2),Token.Type.VOICE));
+            }else     tokenizeLine(strLine.trim());
             }
         }
-    }
     
     public void tokenizeLine(String str){
         index = 0;
@@ -169,7 +166,24 @@ public class Lexer {
     }
     
     private double lengthToNumber(String str){
-        
+        double N = 1.0;
+        double D = 2.0;
+        int l = str.length();
+        int index = str.indexOf("/");
+
+        if (index == -1) {
+            return Double.parseDouble((str));
+        } else if (l == 1) {
+            return 1.0/2; 
+        } else if (index == 0) {
+            D = Double.parseDouble(str.substring(1));
+        } else if (index == l-1){
+            N = Double.parseDouble(str.substring(0, l-1));
+        } else {
+            N = Double.parseDouble(str.substring(0,index));
+            D = Double.parseDouble(str.substring(index+1,l));
+        }
+        return D / N;
     }
     
     public ArrayList<Token> getTokenList(){
