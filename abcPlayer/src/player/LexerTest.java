@@ -26,7 +26,7 @@ public class LexerTest {
     public void TestLegalSingles() throws IOException{
         Lexer l = new Lexer();
         l.tokenize("lexer_legal_single.abc");
-        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Single X:1 V:[] $$$ A B C D E F G a b c d e f g | ^ _ = ' , [ ] z 0 9 /",
+        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Single X:1 V:[] $$$ A B C D E F G a b c d e f g | ^ _ = ' , [ ] z 0.0 9.0 0.5",
                 l.toString());
     }
     
@@ -34,7 +34,7 @@ public class LexerTest {
     public void TestLegalNumbers() throws IOException{
         Lexer l = new Lexer();
         l.tokenize("lexer_legal_numbers.abc");
-        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Numbers X:2 V:[] $$$ A1 A2/3 A4/ A/5",
+        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Numbers X:2 V:[] $$$ A1.0 A0.6666666666666666 A2.0 A0.2",
                 l.toString());
     }
     
@@ -52,6 +52,7 @@ public class LexerTest {
         assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Accidentals X:4 V:[] $$$ ^A _A =A",
                 l.toString());
     }
+    
     
     public void TestLegalBlahplets() throws IOException{
         Lexer l = new Lexer();

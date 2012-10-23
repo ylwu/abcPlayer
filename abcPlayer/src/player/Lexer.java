@@ -183,7 +183,7 @@ public class Lexer {
             N = Double.parseDouble(str.substring(0,index));
             D = Double.parseDouble(str.substring(index+1,l));
         }
-        return D / N;
+        return N / D;
     }
     
     public ArrayList<Token> getTokenList(){
