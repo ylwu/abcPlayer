@@ -51,5 +51,8 @@ public class Token {
     public Type getType(){
         return type;
     }
-
+    
+    public String getValue(){
+    	return str;
+    }
 }
