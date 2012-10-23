@@ -19,6 +19,8 @@ public class Lexer {
         header = new Header();
     }
         
+    //TODO: deal with alternative paths
+    //TODO: decide what to do about legal/illegal whitespace characters in input  
     public void tokenize(String file) throws IOException{
         //FileInputStream fstream = new FileInputStream(file);
         //DataInputStream in = new DataInputStream(fstream);
@@ -80,7 +82,7 @@ public class Lexer {
         
         while ((strLine = br.readLine()) != null){
             if (strLine.equals("")){
-            } else if (strLine.substring(0,1).equals("V")){
+            } else if (strLine.substring(0,2).equals("V:")){
                 tokenList.add(new Token(strLine.substring(2),Token.Type.VOICE));
             } else {    
             tokenizeLine(strLine.trim());
@@ -105,32 +107,45 @@ public class Lexer {
         String s = currentStr.substring(index, index+1);
         if (s.matches("[abcdefgABCDEFG]")){
             tokenList.add(new Token(s,Token.Type.NOTE));     
-        } else if (s.matches("\\|")){
+        } else if (s.equals("|")){
             tokenList.add(new Token(s,Token.Type.LINE));  
         } else if (s.matches("\\^|_|=")){
             tokenList.add(new Token(s,Token.Type.ACCIDENTAL)); 
         } else if (s.matches("[',]")){
             tokenList.add(new Token(s,Token.Type.OCTAVE));
-        } else if (s.matches("\\[")){
-            tokenList.add(new Token(s,Token.Type.LEFTBRA)); 
+        } else if (s.equals("[")){
+            String n = currentStr.substring(index+1,index+2);
+            if (n.equals("1")){
+                tokenList.add(new Token("[1", Token.Type.ALTONE));
+                index +=1;
+            } else if (n.equals("2")){
+                tokenList.add(new Token("[2", Token.Type.ALTTWO));
+                index +=1;    
+            } else tokenList.add(new Token(s,Token.Type.LEFTBRA)); 
         } else if (s.matches("\\]")){
             tokenList.add(new Token(s,Token.Type.RIGHTBRA));
-        } else if (s.matches("\\(")){
-            tokenList.add(new Token(s,Token.Type.LEFTBRA));            
+        } else if (s.matches("\\(") && index < currentStrLength-1){
+            String n = currentStr.substring(index+1,index+2);
+            index += 1;
+            if (n.equals("2")) tokenList.add(new Token("(2",Token.Type.DUPLET));
+            else if (n.equals("3")) tokenList.add(new Token ("(3",Token.Type.TRIPLET));
+            else if (n.equals("4")) tokenList.add(new Token("(4",Token.Type.QUADRUPLET));
+            else throw new IllegalArgumentException("unrecognized character: (");
         } else if (s.matches("\\:")){
             tokenList.add(new Token(s,Token.Type.COLON));
         } else if (s.matches("z")){
             tokenList.add(new Token(s,Token.Type.REST));
         } else if (s.matches("[0-9]|\\/")){
             int x = 1;
-            while (currentStr.substring(index,index + x).matches("[0-9]*\\/?[0-9]*")){
+            while (index + x <= currentStrLength && currentStr.substring(index,index + x).matches("[0-9]*\\/?[0-9]*")){
                 x += 1;
             }
             tokenList.add(new Token(currentStr.substring(index,index + x -1),Token.Type.LENGTH));
             index += x - 2;
-        } else if (s.matches("%")){
+        } else if (s.matches("%")){  
             index = currentStrLength -1;
         } else if (s.equals(" ")){
+            tokenList.add(new Token(" ",Token.Type.SPACE));
         } else {
             throw new IllegalArgumentException("unrecognized character");
             

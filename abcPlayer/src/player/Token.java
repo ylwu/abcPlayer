@@ -10,27 +10,45 @@ public class Token {
      *  OCTAVE: ' or ,
      *  LEFTBRA: [
      *  RIGHTBRA: ]
-     *  LEFTPAR: (
+     *  DUPLET: (2
+     *  TRIPLET: (3
+     *  QUADRUPLET: (4
      *  COLON: :
      *  Rest: z
      *  LENGTH: number that represent the length of the note, such as 2, 1/3.
-     *  VOICE: V (followed by the name of the voice)
+     *  VOICE: V: (followed by the name of the voice)
+     *  AlTONE: [1
+     *  ALTTWO: [2
+     *  SPACE: " "
     */
     public static enum Type{
-        LINE,ACCIDENTAL,NOTE,OCTAVE,LEFTBRA,RIGHTBRA,LEFTPAR,COLON,REST,LENGTH,VOICE
+        LINE,ACCIDENTAL,NOTE,OCTAVE,LEFTBRA,RIGHTBRA,DUPLET,TRIPLET,QUADRUPLET,COLON,REST,
+        LENGTH,VOICE,ALTONE,ALTTWO,SPACE;
     }
     
     private final Type type;
     private final String str;
+    private final Double val;
     
     public Token(String str, Type type){
         this.type = type;
-        this.str = str;    
+        this.str = str;
+        this.val = null;
+    }
+    
+    public Token(Double val, Type type){
+        this.type = type;
+        this.str = null;
+        this.val = val;
     }
     
     @Override
     public String toString(){
         return str;
+    }
+    
+    public Type getType(){
+        return type;
     }
 
 }

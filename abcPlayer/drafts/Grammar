@@ -6,20 +6,36 @@ NOTE: a-gA-G
 OCTAVE: ' or ,
 LEFTBRA: [
 RIGHTBRA: ]
+DUPLET: (2
+TRIPLET: (3
+QUADRUPLET: (4
 LEFTPAR: (
 COLON: :
 Rest: z
 LENGTH: number that represent the length of the note, such as 2, 1/3.
 VOICE: v (followed by the name of the voice)
+ALTONE: [1
+ALTTWO: [2
+SPACE: " "
 
 Non-terminals:
 
-Music = Voice*
-Voice = (Bar|Repeat)*
+Sheet = Voice*
+Voice = MajorSection*
+MajorSection = (Bar|Repeat)* LINE|RIGHTBRA
 Bar = Notes LINE
-Notes = (Single|Chord|Tuplet|Triplet|Rest)*
+Notes = (Single|Chord|Tuplet|Triplet|Quadruplet|Rest)*
 Single = ACCIDENTAL? NOTE OCTAVE* LENGTH?
 Chord = LEFTBRA Single+ RIGHTBRA
 Tuplet = LEFTPAR [2] Single{2}
 Triplet = LEFTPAR [3] Single{3}
+Quadruplet = LEFTPAR [4] Single{4}
 Rest = [z] Length?
+Repeat = COLON? Bar+ Altend? Notes COLON LINE (Altend Notes LINE)?
+Altend = LEFTBRA [/d]
+
+
+To_decide: Do we want the LEFTPAR to be tokenized separted or with the number following it? eg."(3","(4"
+           Do we want to change the name LENGTH to number and represent any number (it can either be
+           the length of the note or the number that determines the type of Tuplets
+           Do we want LENGTH to have field type string or float or int? 

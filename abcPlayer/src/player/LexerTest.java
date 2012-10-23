@@ -1,71 +1,104 @@
 package player;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.junit.Test;
 
+/**
+ * Testing for edge cases including:
+ * -containing the following elements, legal and illegal cases:
+ * --single characters: in possible selections/ not
+ * --numbers: should be all legal
+ * --accidentals: attached to notes/ not
+ * --chords: space issue
+ * --duplets/triplets: space issue
+ * -header lines shorter than 2 chars (illegal)
+ * -missing required header parts (illegal)
+ * -absent/one/excessive spaces (case specific)
+ *
+ */
 public class LexerTest {
     @Test
-    public void TestPiece1() throws IOException{
+    public void TestLegalSingles() throws IOException{
         Lexer l = new Lexer();
-        l.tokenize("piece1.abc");
-        System.out.println(l.toString());
+        l.tokenize("lexer_legal_single.abc");
+        assertEquals("Header: ",
+                l.toString());
     }
     
     @Test
-    public void TestPiece2() throws IOException{
+    public void TestLegalNumbers() throws IOException{
         Lexer l = new Lexer();
-        l.tokenize("piece2.abc");
-        System.out.println(l.toString());
-    }
-
-    @Test
-    public void TestPieceFur_Elise() throws IOException{
-        Lexer l = new Lexer();
-        l.tokenize("fur_elise.abc");
-        System.out.println(l.toString());
+        l.tokenize("lexer_legal_numbers.abc");
+        assertEquals("Header: ",
+                l.toString());
     }
     
     @Test
-    public void TestInvention() throws IOException{
+    public void TestLegalChords() throws IOException{
         Lexer l = new Lexer();
-        l.tokenize("invention.abc");
-        System.out.println(l.toString());
+        l.tokenize("lexer_legal_accidentals.abc");
+        assertEquals("Header: ",
+                l.toString());
+    }
+    @Test
+    public void TestLegalAccidentals() throws IOException{
+        Lexer l = new Lexer();
+        l.tokenize("lexer_legal_accidentals.abc");
+        assertEquals("Header: ",
+                l.toString());
     }
     
     @Test
-    public void TestLittle_Night_Music() throws IOException{
+    public void TestLegalBlahplets() throws IOException{
         Lexer l = new Lexer();
-        l.tokenize("little_night_music.abc");
-        System.out.println(l.toString());
+        l.tokenize("lexer_legal_plets.abc");
+        assertEquals("Header: ",
+                l.toString());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void TestIllegalSingles() throws IOException{
+        Lexer l = new Lexer();
+        l.tokenize("lexer_illegal_single.abc");
+    }
+    
+ // Not tested. No illegal number case for lexer
+//  @Test(expected = IllegalArgumentException.class)
+    public void TestIllegalNumbers() throws IOException{
+        Lexer l = new Lexer();
+        l.tokenize("lexer_illegal_number.abc");
+    }
+    
+ // Not tested. No illegal chords case for lexer
+//  @Test(expected = IllegalArgumentException.class)
+    public void TestIllegalChords() throws IOException{
+        Lexer l = new Lexer();
+        l.tokenize("lexer_illegal_chords.abc");
+    }
+    
+ // Not tested. No illegal accidentals case for lexer
+//  @Test(expected = IllegalArgumentException.class)
+    public void TestIllegalAccidentals() throws IOException{
+        Lexer l = new Lexer();
+        l.tokenize("lexer_illegal_accidentals.abc");
     }
     
     @Test
-    public void TestPaddy() throws IOException{
+    public void TestIllegalBlahplets() throws IOException{
         Lexer l = new Lexer();
-        l.tokenize("paddy.abc");
-        System.out.println(l.toString());
-    }
-    
-    @Test
-    public void TestPrelude() throws IOException{
-        Lexer l = new Lexer();
-        l.tokenize("prelude.abc");
-        System.out.println(l.toString());
-    }
-    
-    @Test
-    public void TestEmptyLines() throws IOException{
-        Lexer l = new Lexer();
-        l.tokenize("empty_lines.abc");
-        System.out.println(l.toString());
+        l.tokenize("lexer_illegal_plets.abc");
+        assertFalse(l.toString().equals(""));
     }
     
     @Test
     public void TestComments() throws IOException{
         Lexer l = new Lexer();
-        l.tokenize("comment.abc");
-        System.out.println(l.toString());
+        l.tokenize("lexer_comment.abc");
+        assertEquals("Header: ", l.toString());
     }
     
     

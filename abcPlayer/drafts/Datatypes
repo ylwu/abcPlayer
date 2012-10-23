@@ -14,12 +14,15 @@ Header:
 
 Music:
 -Class Sheet
--Class Meter
++-fields: Voice[] Voice
+-Class Voice
++-fields: Music[] Bar|Repeat
+-Class Bar
 +-fields: Notes notes
 -Class Repeat
-+-fields: Meter rep1, Meter rep2, Meter alter
++-fields: Bar rep1, Bar rep2, Bar alter
 -Class Notes
-+-fields: Token[] tokens
++-fields: Music[] (Single|Chord|Tuplet|Triplet|Quadruplet|Rest)
 -Class Single
 +-fields: Token token, boolean hasAcc, boolean hasOctave, Length length
 -Class Length
@@ -30,6 +33,8 @@ Music:
 +-fields: Single[2] singles
 -Class Triplet
 +-fields: Single[3] singles
+-Class Quadruplet
++-fields: Single[4] singles
 -Class Rest
 +-fields: float length
 -Class Altend
