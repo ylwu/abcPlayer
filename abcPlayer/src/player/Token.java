@@ -44,7 +44,8 @@ public class Token {
     
     @Override
     public String toString(){
-        return str;
+        if (str!= null) return str;
+        else return Double.toString(val);
     }
     
     public Type getType(){
