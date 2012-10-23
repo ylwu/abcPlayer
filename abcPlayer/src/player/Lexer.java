@@ -148,7 +148,6 @@ public class Lexer {
         } else if (s.equals(" ")){
             tokenList.add(new Token(" ",Token.Type.SPACE));
         } else {
-            System.out.println(s);
             throw new IllegalArgumentException("unrecognized character");
             
         }
