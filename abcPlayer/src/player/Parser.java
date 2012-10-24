@@ -1,6 +1,7 @@
 package player;
 
 import java.util.*;
+
 import player.Token;
 
 public class Parser {
@@ -12,6 +13,26 @@ public class Parser {
 	
 	private List<Token> tokenList;
 	private List<Expression> parsedList;
+	
+	private List<Expression> sectionMaker(){
+		int length = this.tokenList.size();
+		ArrayList<Integer> lineIndex = new ArrayList<Integer>();
+		for (int i=0; i<length; i++){
+			if (tokenList.get(i).getType().equals(Token.Type.LINE)){
+				lineIndex.add(i);
+			}
+		}
+		ArrayList<Expression> listOfExpression = new ArrayList<Expression>();
+		int numberOfLine = lineIndex.size();
+		for (int j=1; j<numberOfLine; j++){
+			int fromIndex = lineIndex.get(j-1) + 1;
+			int toIndex = lineIndex.get(j);
+			ArrayList<Token> section = new ArrayList<Token>();
+			section = (ArrayList<Token>) this.tokenList.subList(fromIndex, toIndex);
+			listOfExpression.add(new Expression.Section(section));
+		}
+		return listOfExpression;
+	}
 	
 	private List<Expression> createExpressionList (List<Token> listOfToken) {
 		List<Expression> listOfExpression = new ArrayList<Expression>(); 

@@ -23,6 +23,17 @@ public interface Expression {
 		}
 	}
 
+	public class Section implements Expression {
+		
+		public String getType(){
+			return "Section";
+		}
+		
+		public String toString(){
+			return "This is a Section";
+		}
+	}
+	
 	public class Accidental implements Expression {
 
 		private Token thisToken;

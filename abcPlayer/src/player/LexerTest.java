@@ -1,10 +1,7 @@
 package player;
 
 import static org.junit.Assert.*;
-
 import java.io.IOException;
-import java.util.ArrayList;
-
 import org.junit.Test;
 
 /**
