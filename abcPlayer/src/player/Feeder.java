@@ -9,6 +9,8 @@ import sound.SequencePlayer;
 public class Feeder {
 	Parser parser;
 	SequencePlayer player;
+	int pitch;
+	int defLen;
 	
 	/**
 	 * Constructs a Feeder object from a Parser.
@@ -16,7 +18,7 @@ public class Feeder {
 	 */
 	public Feeder(Parser parser){
 		this.parser = parser;
-		
+		headerToFields();
 	}
 	
 	/**
@@ -32,7 +34,16 @@ public class Feeder {
 	 * Takes the field header from the lexer and creates a SequencePlayer by using
 	 * parameters specified by the head.
 	 */
-	public SequencePlayer headerToPlayer(){
+	public void headerToFields(){
+	    Header header = this.parser.lexer.header;
+		if (header.Q != null){
+		    this.player = new SequencePlayer(Integer.parseInt(header.T), 12);
+		}else{
+		    this.player = new SequencePlayer(100, 12);
+		}
+		if (header.L != null){
+		    this.defLen = 
+		}
 		
 	}
 	
