@@ -1,9 +1,32 @@
 package player;
 
+import java.util.*;
+
 public interface Expression {
 	
 	public String getType();
 	public String toString();
+	
+    public class Section implements Expression {
+        
+        private ArrayList<Token> tokenSection;
+        
+        public Section(ArrayList<Token> l){
+            this.tokenSection = l;
+        }
+        
+        public String getType(){
+            return "Section";
+        }
+        
+        public String toString(){
+            return "This is a Section";
+        }
+        
+        public ArrayList<Token> getTokenSection(){
+            return tokenSection;
+        }
+    }
 	
 	public class Line implements Expression {
 		
@@ -23,17 +46,6 @@ public interface Expression {
 		}
 	}
 
-	public class Section implements Expression {
-		
-		public String getType(){
-			return "Section";
-		}
-		
-		public String toString(){
-			return "This is a Section";
-		}
-	}
-	
 	public class Accidental implements Expression {
 
 		private Token thisToken;

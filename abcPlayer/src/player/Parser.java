@@ -2,19 +2,21 @@ package player;
 
 import java.util.*;
 
+import player.Expression.Section;
 import player.Token;
 
 public class Parser {
 
 	public Parser(Lexer lexer) {
 		this.tokenList = lexer.getTokenList();
-		this.parsedList = createExpressionList(this.tokenList);
+		ArrayList<Expression.Section> intermediateList= sectionMaker();
+		this.parsedList = repeatedSection(intermediateList);
 	}
 	
 	private List<Token> tokenList;
-	private List<Expression> parsedList;
+	private List<Expression.Section> parsedList;
 	
-	private List<Expression> sectionMaker(){
+	private ArrayList<Section> sectionMaker(){
 		int length = this.tokenList.size();
 		ArrayList<Integer> lineIndex = new ArrayList<Integer>();
 		for (int i=0; i<length; i++){
@@ -22,7 +24,7 @@ public class Parser {
 				lineIndex.add(i);
 			}
 		}
-		ArrayList<Expression> listOfExpression = new ArrayList<Expression>();
+		ArrayList<Expression.Section> listOfExpression = new ArrayList<Expression.Section>();
 		int numberOfLine = lineIndex.size();
 		for (int j=1; j<numberOfLine; j++){
 			int fromIndex = lineIndex.get(j-1) + 1;
@@ -34,13 +36,115 @@ public class Parser {
 		return listOfExpression;
 	}
 	
-	private List<Expression> createExpressionList (List<Token> listOfToken) {
-		List<Expression> listOfExpression = new ArrayList<Expression>(); 
-		for (Token token: listOfToken) {
-			Expression expr = setTokenExpression(token);
-			listOfExpression.add(expr);
-		}
-		return listOfExpression;
+	private List<Expression.Section> repeatedSection(List<Expression.Section> list) {
+	    boolean repeat = false;
+	    boolean altOne = false;
+	    ArrayList<Expression.Section> newList = new ArrayList<Expression.Section>();
+	    ArrayList<Expression.Section> repeatedSection = new ArrayList<Expression.Section>();
+	    ArrayList<Expression.Section> altOneSection = new ArrayList<Expression.Section>();
+	    for (Expression.Section e: list){
+	        ArrayList<Token> tokenSection =
+	                e.getTokenSection();
+	        int length = tokenSection.size();
+	        if (altTwo(e)){
+	            ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
+                Expression.Section newE = new Expression.Section(newTokenSection); 
+                newList.add(newE);
+	        } else if (altOne) {
+	            if (endRepeat(e)){
+                    ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
+                    Expression.Section newE = new Expression.Section(newTokenSection); 
+                    newList.addAll(altOneSection);
+                    newList.add(newE);
+                    altOneSection = null;
+	            } else {
+	                altOneSection.add(e);
+	            }
+	        } else {
+    	        if (!repeat) {
+    	            repeat = beginRepeat(e);
+    	            if (repeat) {
+    	                if (endRepeat(e)){
+    	                        newList.add(e);
+    	                        newList.add(e);
+    	                } else {
+    	                    ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
+    	                    Expression.Section newE = new Expression.Section(newTokenSection); 
+    	                    newList.add(newE);
+    	                    repeatedSection.add(newE);
+    	                }
+    	            } else {
+    	                if (altOne(e)) {
+    	                    if (endRepeat(e)){
+    	                        ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
+    	                        Expression.Section newE = new Expression.Section(newTokenSection); 
+    	                        int lengthNewList = newList.size();
+    	                        newList.add(newE);
+    	                        newList.add(newList.get(lengthNewList-1));
+    	                    } else {
+    	                        altOne = true;
+    	                        ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
+                                Expression.Section newE = new Expression.Section(newTokenSection);
+                                altOneSection.add(newE);
+    	                    }
+    	                } else if (endRepeat(e)) {
+    	                    ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
+    	                    Expression.Section newE = new Expression.Section(newTokenSection);
+    	                    newList.add(newE);
+    	                    int lengthNewList = newList.size();
+    	                    newList.add(newList.get(lengthNewList-2));
+    	                    newList.add(newList.get(lengthNewList-1));
+    	                } else {
+    	                    newList.add(e);
+    	                }
+    	            }
+    	        } else {
+    	            if (altOne(e)) {
+                        if (endRepeat(e)){
+                            ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
+                            Expression.Section newE = new Expression.Section(newTokenSection); 
+                            newList.add(newE);
+                            newList.addAll(repeatedSection);
+                            repeatedSection = null;
+                        } else {
+                            altOne = true;
+                            ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
+                            Expression.Section newE = new Expression.Section(newTokenSection);
+                            altOneSection.add(newE);
+                        }
+    	            } else if (endRepeat(e)){
+    	                ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
+                        Expression.Section newE = new Expression.Section(newTokenSection); 
+    	                newList.add(newE);
+    	                newList.addAll(repeatedSection);
+    	                newList.add(newE);
+    	                repeatedSection = null;
+    	            }
+    	        }
+    	    }
+	    }
+	    return newList;
+	}
+	
+	private boolean beginRepeat(Expression.Section e){
+	    if (e.getTokenSection().get(0).getType().equals(Token.Type.COLON)) return true;
+	    return false;
+	}
+	
+	private boolean endRepeat(Expression.Section e){
+	    int indexLastToken = e.getTokenSection().size() - 1;
+	    if (e.getTokenSection().get(indexLastToken).getType().equals(Token.Type.COLON)) return true;
+	    return false;
+	}
+	
+	private boolean altOne(Expression.Section e){
+	    if (e.getTokenSection().get(0).getType().equals(Token.Type.ALTONE)) return true;
+	    return false;
+	}
+	
+	private boolean altTwo(Expression.Section e){
+	    if (e.getTokenSection().get(0).getType().equals(Token.Type.ALTTWO)) return true;
+	    return false;
 	}
 	
 	private Expression setTokenExpression (Token token){
@@ -79,7 +183,7 @@ public class Parser {
 		} 
 	}
 	
-	public List<Expression> getParsedList(){
+	public List<Expression.Section> getParsedList(){
 		return this.parsedList;
 	}
 }
