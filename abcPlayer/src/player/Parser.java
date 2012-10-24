@@ -10,7 +10,7 @@ public class Parser {
 	public Parser(Lexer lexer) {
 		this.tokenList = lexer.getTokenList();
 		ArrayList<Expression.Section> intermediateList= sectionMaker();
-		this.parsedList = repeatedSection(intermediateList);
+		ArrayList<Expression.Section> notNotedList = repeatedSection(intermediateList);
 	}
 	
 	private List<Token> tokenList;
@@ -36,7 +36,7 @@ public class Parser {
 		return listOfExpression;
 	}
 	
-	private List<Expression.Section> repeatedSection(List<Expression.Section> list) {
+	private ArrayList<Expression.Section> repeatedSection(List<Expression.Section> list) {
 	    boolean repeat = false;
 	    boolean altOne = false;
 	    ArrayList<Expression.Section> newList = new ArrayList<Expression.Section>();
@@ -46,6 +46,7 @@ public class Parser {
 	        ArrayList<Token> tokenSection =
 	                e.getTokenSection();
 	        int length = tokenSection.size();
+	        int lengthNewList = newList.size();
 	        if (altTwo(e)){
 	            ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
                 Expression.Section newE = new Expression.Section(newTokenSection); 
@@ -54,9 +55,13 @@ public class Parser {
 	            if (endRepeat(e)){
                     ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
                     Expression.Section newE = new Expression.Section(newTokenSection); 
+                    newList.addAll(repeatedSection);
                     newList.addAll(altOneSection);
                     newList.add(newE);
-                    altOneSection = null;
+                    repeatedSection = new ArrayList<Expression.Section>();
+                    altOneSection = new ArrayList<Expression.Section>();
+                    repeat = false;
+                    altOne = false;
 	            } else {
 	                altOneSection.add(e);
 	            }
@@ -65,8 +70,10 @@ public class Parser {
     	            repeat = beginRepeat(e);
     	            if (repeat) {
     	                if (endRepeat(e)){
-    	                        newList.add(e);
-    	                        newList.add(e);
+    	                    ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length-1);
+                            Expression.Section newE = new Expression.Section(newTokenSection); 
+    	                    newList.add(newE);
+    	                    newList.add(newE);
     	                } else {
     	                    ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
     	                    Expression.Section newE = new Expression.Section(newTokenSection); 
@@ -76,9 +83,8 @@ public class Parser {
     	            } else {
     	                if (altOne(e)) {
     	                    if (endRepeat(e)){
-    	                        ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
+    	                        ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length-1);
     	                        Expression.Section newE = new Expression.Section(newTokenSection); 
-    	                        int lengthNewList = newList.size();
     	                        newList.add(newE);
     	                        newList.add(newList.get(lengthNewList-1));
     	                    } else {
@@ -86,14 +92,14 @@ public class Parser {
     	                        ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
                                 Expression.Section newE = new Expression.Section(newTokenSection);
                                 altOneSection.add(newE);
+                                repeatedSection.add(newList.get(lengthNewList-1));
     	                    }
     	                } else if (endRepeat(e)) {
     	                    ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
     	                    Expression.Section newE = new Expression.Section(newTokenSection);
     	                    newList.add(newE);
-    	                    int lengthNewList = newList.size();
-    	                    newList.add(newList.get(lengthNewList-2));
     	                    newList.add(newList.get(lengthNewList-1));
+    	                    newList.add(newE);
     	                } else {
     	                    newList.add(e);
     	                }
@@ -105,7 +111,8 @@ public class Parser {
                             Expression.Section newE = new Expression.Section(newTokenSection); 
                             newList.add(newE);
                             newList.addAll(repeatedSection);
-                            repeatedSection = null;
+                            repeatedSection = new ArrayList<Expression.Section>();
+                            repeat = false;
                         } else {
                             altOne = true;
                             ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
@@ -118,7 +125,11 @@ public class Parser {
     	                newList.add(newE);
     	                newList.addAll(repeatedSection);
     	                newList.add(newE);
-    	                repeatedSection = null;
+    	                repeatedSection = new ArrayList<Expression.Section>();
+    	                repeat = false;
+    	            } else {
+    	                newList.add(e);
+    	                repeatedSection.add(e);
     	            }
     	        }
     	    }
@@ -145,6 +156,13 @@ public class Parser {
 	private boolean altTwo(Expression.Section e){
 	    if (e.getTokenSection().get(0).getType().equals(Token.Type.ALTTWO)) return true;
 	    return false;
+	}
+	
+	private List<Expression.Note> createNote (Expression.Section sect){
+	    ArrayList<Token> tokenSection = sect.getTokenSection();
+	    for (Token token: tokenSection){
+	        
+	    }
 	}
 	
 	private Expression setTokenExpression (Token token){
