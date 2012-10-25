@@ -22,6 +22,7 @@ public class Feeder {
 	private LegalKey key;
 	private double defLen;
 	private int[] curTick;
+	private double defMeter;
 	private int curVoice = 0;
 	private static enum LegalKey{A, Ab, B, Bb, C, D, Db, E, Eb, F, Fs, G, Gb};
 	
@@ -52,19 +53,26 @@ public class Feeder {
 	 */
 	public void addAll(){
 	    int vCount = -1;
+	    double fill = 0;
 	    this.curTick = new int[this.parser.getParsedList().size()];
 		for (Voice v: this.parser.getParsedList()){
 		    vCount++;
 		    curVoice = vCount;
 		    for (Section s: v.getSections()){
+		        fill = 0;
 		        for (Expression e: s.getNotes()){
 		            if (e.getType().equals("SingleNote")){
 		                feedNote((SingleNote)e);
 		                curTick[curVoice] += (int)Math.round((((SingleNote)e).getLength())/this.defLen*12);
+		                fill += ((SingleNote)e).getLength();
 		            }else if(e.getType().equals("Chord")){
 		                feedChord((Chord)e);
 		                curTick[curVoice] += (int)Math.round((((SingleNote)(((Chord)e).getNote().get(0))).getLength())/this.defLen*12);
+		                fill += (((SingleNote)(((Chord)e).getNote().get(0))).getLength());
 		            }
+		        }
+		        if ((this.defMeter-fill)>=0.05){  // The magic number 0.05 allows some small error buildup.
+		            throw new RuntimeException("Ain't nobody got time for pickups");
 		        }
 		    }
 		}
@@ -83,8 +91,11 @@ public class Feeder {
             this.defLen = lengthToNumber(header.L);
         }else throw new RuntimeException("Illegal header input");
 		if (header.Q != null){
-		    this.player = new SequencePlayer(Integer.parseInt(header.T)*(int)Math.round(this.defLen/0.25), 12);
+		    this.player = new SequencePlayer(Integer.parseInt(header.Q)*(int)Math.round(this.defLen/0.25), 12);
 		}else throw new RuntimeException("Illegal header input");
+		if (header.M != null){
+		    this.defMeter = lengthToNumber(header.M);
+		}
 		if (header.K != null){
 		    int hasLK = hasLegalKey(header.K);
 		    if (hasLK == 1){
