@@ -12,21 +12,22 @@ import org.junit.Test;
 
 public class FeederTest {
 
-    @Test
+    //@Test
     public void piece1Test() throws MidiUnavailableException, InvalidMidiDataException, IOException{
         Lexer lexer = new Lexer();
-        lexer.tokenize("lexer_legal_plets.abc");
+        lexer.tokenize("piece1.abc");
         Feeder feeder = new Feeder(new Parser(lexer));
         feeder.addAll();
         feeder.play();
         feeder.toString();
     }
     
-    //@Test
+    @Test
     public void piece2Test() throws MidiUnavailableException, InvalidMidiDataException, IOException{
         Lexer lexer = new Lexer();
         lexer.tokenize("piece2.abc");
         Feeder feeder = new Feeder(new Parser(lexer));
+        feeder.addAll();
         feeder.play();
     }
     

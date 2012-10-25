@@ -55,7 +55,7 @@ public class Feeder {
 	public void addAll(){
 	    int vCount = 0;
 	    double fill = 0;
-	    this.curTick = new int[this.parser.header.V.size()];
+	    //this.curTick = new int[this.parser.header.V.size()];
 	    HashMap vMap = new HashMap(this.curTick.length);
 		for (Voice v: this.parser.getParsedList()){
 		    if (!vMap.containsKey(v.toString())){
@@ -70,11 +70,12 @@ public class Feeder {
 		            System.out.println("looping notes");
 		            if (e.getType().equals("SingleNote")){
 		                feedNote((SingleNote)e);
-		                curTick[curVoice] += (int)Math.round((((SingleNote)e).getLength())/this.defLen*12);
+		                curTick[curVoice] += (int)Math.round((((SingleNote)e).getLength())*12);
+		                System.out.println((int)Math.round((((SingleNote)e).getLength())*12));
 		                fill += ((SingleNote)e).getLength();
 		            }else if(e.getType().equals("Chord")){
 		                feedChord((Chord)e);
-		                curTick[curVoice] += (int)Math.round((((SingleNote)(((Chord)e).getNote().get(0))).getLength())/this.defLen*12);
+		                curTick[curVoice] += (int)Math.round((((SingleNote)(((Chord)e).getNote().get(0))).getLength())*12);
 		                fill += (((SingleNote)(((Chord)e).getNote().get(0))).getLength());
 		            }
 		        }
@@ -104,6 +105,7 @@ public class Feeder {
 	    Header header = this.parser.header;
         if (header.L != null){
             this.defLen = lengthToNumber(header.L);
+            System.out.println(this.defLen);
         }else throw new RuntimeException("Illegal header input");
 		if (header.Q != null){
 		    this.player = new SequencePlayer(Integer.parseInt(header.Q)*(int)Math.round(this.defLen/0.25), 12);
@@ -217,10 +219,14 @@ public class Feeder {
                 break;
     	    }
 	    }
+	    if (note.toLowerCase()==note){
+	        octave+=12;
+	        note=note.toUpperCase();
+	    }
 		Pitch pitch = new Pitch(note.charAt(0)).transpose(transpose).transpose(octave);
 		this.player.addNote(pitch.toMidiNote(),
 		        curTick[curVoice], 
-		        (int)Math.round(length/this.defLen*12));
+		        (int)Math.round(length*this.defLen*12));
 	}
 	
 	/**
