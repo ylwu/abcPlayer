@@ -17,7 +17,9 @@ public class FeederTest {
         Lexer lexer = new Lexer();
         lexer.tokenize("piece1.abc");
         Feeder feeder = new Feeder(new Parser(lexer));
+        feeder.addAll();
         feeder.play();
+        feeder.toString();
     }
     
     @Test
@@ -74,7 +76,6 @@ public class FeederTest {
         sl.add(s1);
         v1.setSections(sl);
         vl.add(v1);
-        return vl;
-        }
+        
     }
 }

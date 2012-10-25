@@ -237,7 +237,7 @@ public class Feeder {
 	private int hasLegalKey(String input) {
 	    for (LegalKey k : LegalKey.values()) {
 	        if (k.name().equals(input.substring(0,1))) {
-	            if (k.name().equals(input.substring(0,2))){
+	            if ((input.length()>1)&&(k.name().equals(input.substring(0,2)))){
 	                return 2;
 	            }return 1;
 	        }
