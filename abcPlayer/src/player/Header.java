@@ -10,7 +10,7 @@ public class Header {
     public String Q = "";
     public String T = "";
     public String X = "";
-    public ArrayList<String> V = new ArrayList<String>(); 
+    public ArrayList<String> V; 
     
     
     public Header(){
@@ -18,6 +18,7 @@ public class Header {
         L = "1/8";
         M = "4/4";
         Q = "100";
+        V = new ArrayList<String>();
     }
     
     public String toString(){
