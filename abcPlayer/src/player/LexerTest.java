@@ -48,42 +48,43 @@ public class LexerTest {
         l.tokenize("lexer_legal_accidentals.abc");
         assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Accidentals X:4 V:[] $$$ ^A _A =A",
                 l.toString());
+        assertEquals(Token.Type.ACCIDENTAL, l.tokenList.get(0).getType());
+        assertEquals(Token.Type.NOTE, l.tokenList.get(1).getType());
+        assertEquals(Token.Type.ACCIDENTAL, l.tokenList.get(3).getType());
     }
     
-    
+    @Test
     public void TestLegalBlahplets() throws IOException{
         Lexer l = new Lexer();
         l.tokenize("lexer_legal_plets.abc");
-        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Plets X:5 V:[] $$$ (2AB (3ABC (4ABCD (2A1/2B1/2",
+        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Plets X:5 V:[] $$$ (2AB (3ABC (4ABCD (2A0.5B0.5",
                 l.toString());
-        assertEquals(l.tokenList.get(0).getType(), Token.Type.DUPLET);
+        assertEquals(Token.Type.DUPLET, l.tokenList.get(0).getType());
+    }
+    
+    @Test
+    public void TestLegalVoices() throws IOException{
+        Lexer l = new Lexer();
+        l.tokenize("lexer_legal_voices.abc");
+        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Voices X:8 V:[1, 2, A] $$$ 1A B C D2A B C DAA B C D",
+                l.toString());
+        assertEquals(Token.Type.VOICE, l.tokenList.get(0).getType());
+        assertEquals(Token.Type.VOICE, l.tokenList.get(8).getType());
+    }
+    
+    @Test
+    public void TestMixedCases() throws IOException{
+        Lexer l = new Lexer();
+        l.tokenize("piece2.abc");
+        assertEquals("Header: C:unknown K:C L:1/4 M:4/4 Q:200 T: Piece No.2 X:2 V:[] $$$ [^Fe]0.5 [Fe]0.5 z0.5 [Fe]0.5 z0.5 [Fc]0.5 [Fe] |" +
+        		" [Gbg] z G z | c1.5 G0.5 z E | E0.5 a b _b0.5  a | (3Geg a' f0.5 g0.5 | z0.5 e c0.5 d0.5 b0.75 z0.75 |",
+                l.toString());
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void TestIllegalSingles() throws IOException{
         Lexer l = new Lexer();
         l.tokenize("lexer_illegal_single.abc");
-    }
-    
- // Not tested. No illegal number case for lexer
-//  @Test(expected = IllegalArgumentException.class)
-    public void TestIllegalNumbers() throws IOException{
-        Lexer l = new Lexer();
-        l.tokenize("lexer_illegal_number.abc");
-    }
-    
- // Not tested. No illegal chords case for lexer
-//  @Test(expected = IllegalArgumentException.class)
-    public void TestIllegalChords() throws IOException{
-        Lexer l = new Lexer();
-        l.tokenize("lexer_illegal_chords.abc");
-    }
-    
- // Not tested. No illegal accidentals case for lexer
-//  @Test(expected = IllegalArgumentException.class)
-    public void TestIllegalAccidentals() throws IOException{
-        Lexer l = new Lexer();
-        l.tokenize("lexer_illegal_accidentals.abc");
     }
     
     @Test(expected = IllegalArgumentException.class)
