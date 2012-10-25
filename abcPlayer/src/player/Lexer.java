@@ -82,8 +82,8 @@ public class Lexer {
             if (strLine.equals("")){  
             } else if (strLine.substring(0,1).equals("%")){
             } else if (strLine.substring(0,2).equals("V:")){
-               tokenList.add(new Token(strLine.substring(2),Token.Type.VOICE));
-            }else     tokenizeLine(strLine.trim());
+               tokenList.add(new Token(strLine.substring(2).trim(),Token.Type.VOICE));
+            }else tokenizeLine(strLine.trim());
             }
         }
     

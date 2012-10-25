@@ -380,4 +380,13 @@ public class Parser {
 	public List<Expression.Voice> getParsedList(){
 		return this.parsedList;
 	}
+	
+	public String toString(){
+	    StringBuffer s = new StringBuffer();
+	    for (Expression e: parsedList){
+	        s.append(e.toString());
+	        s.append(" ");
+	    }
+	    return s.toString();
+	}
 }
