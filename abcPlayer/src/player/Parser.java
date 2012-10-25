@@ -73,7 +73,7 @@ public class Parser {
 		ArrayList<Expression.Section> listOfExpression = new ArrayList<Expression.Section>();
 		int numberOfLine = lineIndex.size();
 		for (int j=1; j<numberOfLine; j++){
-			int fromIndex = lineIndex.get(j-1) + 1;
+			int fromIndex = lineIndex.get(j-1);
 			int toIndex = lineIndex.get(j);
 			ArrayList<Token> section = new ArrayList<Token>();
 			for (int i=fromIndex; i<=toIndex; i++){
@@ -217,76 +217,79 @@ public class Parser {
 	    ArrayList<Token> noteToken = new ArrayList<Token>();
 	    for (Token token: tokenSection){
 	    	int i = typeHashCode(token.getType());
-	    	if (token.getType().equals(Token.Type.DUPLET)){
-	    		duplet = true;
-	    	} else if (duplet){
-	    		if (i < count){
-					pletCount++;
-					count = 0;
-			       	if (pletCount >= 2){
-			       		duplet = false;
-			       		listNote.addAll(makeDuplet(noteToken));
-			       		noteToken = new ArrayList<Token>();
-			       	} else {
-			       		noteToken.add(token);
-			       	}
-				} else {
-			       	count = i;
-			       	noteToken.add(token);
-				}
-	    	} else if (token.getType().equals(Token.Type.TRIPLET)){
-	    		triplet = true;
-	    	} else if (triplet) {
-	    		if (i < count){
-					pletCount++;
-					count = 0;
-			       	if (pletCount >= 3){
-			       		triplet = false;
-			       		listNote.addAll(makeTriplet(noteToken));
-			       		noteToken = new ArrayList<Token>();
-			       	} else {
-			       		noteToken.add(token);
-			       	}
-				} else {
-			       	count = i;
-			       	noteToken.add(token);
-				}
-	    	} else if (token.getType().equals(Token.Type.QUADRUPLET)||quadruplet){
-	    		quadruplet = true;
-	    	} else if (quadruplet) {
-	    		if (i < count){
-					pletCount++;
-					count = 0;
-			       	if (pletCount >= 4){
-			       		quadruplet = false;
-			       		listNote.addAll(makeQuadruplet(noteToken));
-			       		noteToken = new ArrayList<Token>();
-			       	} else {
-			       		noteToken.add(token);
-			       	}
-				} else {
-			       	count = i;
-			       	noteToken.add(token);
-				}
-	    	} else {
-				if (i < count){
-			       	listNote.add(makeNote(noteToken));
-			       	noteToken = new ArrayList<Token>();
-			       	noteToken.add(token);
-			       	count = 0;
-				} else {
-			       	count = i;
-			       	noteToken.add(token);
-				}
-	    	}
-	    	if (duplet) {
-	    		listNote.addAll(makeDuplet(noteToken));
-	    	} else if (triplet) {
-	    		listNote.addAll(makeTriplet(noteToken));
-	    	} else if (quadruplet) {
-	    		listNote.addAll(makeQuadruplet(noteToken));
-	    	} else {
-	    	listNote.add(makeNote(noteToken));
+		    if(i!=20){	
+	    		if (token.getType().equals(Token.Type.DUPLET)){
+		    		duplet = true;
+		    	} else if (duplet){
+		    		if (i < count){
+						pletCount++;
+						count = 0;
+				       	if (pletCount >= 2){
+				       		duplet = false;
+				       		listNote.addAll(makeDuplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       	} else {
+				       		noteToken.add(token);
+				       	}
+					} else {
+				       	count = i;
+				       	noteToken.add(token);
+					}
+		    	} else if (token.getType().equals(Token.Type.TRIPLET)){
+		    		triplet = true;
+		    	} else if (triplet) {
+		    		if (i < count){
+						pletCount++;
+						count = 0;
+				       	if (pletCount >= 3){
+				       		triplet = false;
+				       		listNote.addAll(makeTriplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       	} else {
+				       		noteToken.add(token);
+				       	}
+					} else {
+				       	count = i;
+				       	noteToken.add(token);
+					}
+		    	} else if (token.getType().equals(Token.Type.QUADRUPLET)||quadruplet){
+		    		quadruplet = true;
+		    	} else if (quadruplet) {
+		    		if (i < count){
+						pletCount++;
+						count = 0;
+				       	if (pletCount >= 4){
+				       		quadruplet = false;
+				       		listNote.addAll(makeQuadruplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       	} else {
+				       		noteToken.add(token);
+				       	}
+					} else {
+				       	count = i;
+				       	noteToken.add(token);
+					}
+		    	} else {
+					if (i < count||(i==1&&count==1)){
+						System.out.println(noteToken.toString());
+				       	listNote.add(makeNote(noteToken));
+				       	noteToken = new ArrayList<Token>();
+				       	noteToken.add(token);
+				       	count = 0;
+					} else {
+				       	count = i;
+				       	noteToken.add(token);
+					}
+		    	}
+		    	if (duplet) {
+		    		listNote.addAll(makeDuplet(noteToken));
+		    	} else if (triplet) {
+		    		listNote.addAll(makeTriplet(noteToken));
+		    	} else if (quadruplet) {
+		    		listNote.addAll(makeQuadruplet(noteToken));
+		    	} else {
+		    	listNote.add(makeNote(noteToken));
+		    	}
 	    	}
 	    }
 	    sect.setNotes(listNote);
