@@ -89,6 +89,8 @@ public interface Expression {
     	private Expression length;
     	
     	public SingleNote(){
+    	    Token t = new Token(1.0,Token.Type.LENGTH);
+    	    length = new Length(t);
     	}
     	
     	public String getType(){
