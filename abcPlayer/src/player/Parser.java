@@ -250,7 +250,7 @@ public class Parser {
 		    if(i!=20){	
 		        if (token.getType().equals(Token.Type.LEFTBRA)){
 	                 chord = true;
-	             } else if (chord){
+	            } else if (chord){
 	                 if (token.getType().equals(Token.Type.RIGHTBRA)){
 	                     chord = false;
 	                     Expression.Chord c = new Expression.Chord();
@@ -258,9 +258,7 @@ public class Parser {
 	                     c.setNote(list);
 	                     listNote.add(c);
 	                     chordExpression = new ArrayList<Token>();
-	                 } else {
-	                     chordExpression.add(token);
-	                 }
+	                 } else  chordExpression.add(token);
 		    	} else if (token.getType().equals(Token.Type.DUPLET)){
 		    		duplet = true;
 		    	} else if (duplet){
@@ -271,18 +269,15 @@ public class Parser {
 				       		duplet = false;
 				       		listNote.addAll(makeDuplet(noteToken));
 				       		noteToken = new ArrayList<Token>();
-				       	} else {
-				       		noteToken.add(token);
-				       	}
-					} else if ((i==1 && count==1)){
+				       	} else noteToken.add(token);
+				    } else if ((i==1 && count==1)){
 						listNote.add(makeNote(noteToken));
 				       	noteToken = new ArrayList<Token>();
 				       	noteToken.add(token);
 				       	count = i;
-		    		} else {
+				    } else {
 				       	count = i;
-				       	noteToken.add(token);
-					}
+				       	noteToken.add(token);}
 		    	} else if (token.getType().equals(Token.Type.TRIPLET)){
 		    		triplet = true;
 		    	} else if (triplet) {
