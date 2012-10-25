@@ -1,26 +1,57 @@
 package player;
 
 import java.util.*;
-
-import player.Expression.Section;
 import player.Token;
 
 public class Parser {
 
 	public Parser(Lexer lexer) {
 		this.tokenList = lexer.getTokenList();
-		ArrayList<Expression.Section> intermediateList= sectionMaker();
-		this.parsedList= repeatedSection(intermediateList);
-		for (Expression.Section sect: this.parsedList) {
-			sectionToNotes(sect);
+		this.parsedList= voiceMaker();
+		for (Expression.Voice e: parsedList){
+			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
+			ArrayList<Expression.Section> sections = e.getSections();
+			for (Expression.Section sect: sections){
+				sectionToNotes (sect);
+			}
 		}
 	}
 	
 	private List<Token> tokenList;
-	private List<Expression.Section> parsedList;
+	private List<Expression.Voice> parsedList;
 	
-	private ArrayList<Section> sectionMaker(){
-		int length = this.tokenList.size();
+	private ArrayList<Expression.Voice> voiceMaker(){
+		ArrayList<String> listOfVoice = new ArrayList<String>();
+		ArrayList<ArrayList<Token>> tokenInVoice = new ArrayList<ArrayList<Token>>();
+		String voiceOfTime = "";
+		ArrayList<Token> listOfTime = new ArrayList<Token>();
+		for (Token token: tokenList){
+			if (token.getType().equals(Token.Type.VOICE)){
+				String voiceName = token.toString();
+				tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime);
+				if (listOfVoice.contains(voiceName)){
+					listOfTime = tokenInVoice.get(listOfVoice.indexOf(voiceName));
+				} else {
+					listOfVoice.add(voiceName);
+					listOfTime = new ArrayList<Token>();
+					tokenInVoice.add(listOfTime);
+				}
+			} else {
+				listOfTime.add(token);
+			}
+		}
+		tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime);
+		ArrayList<Expression.Voice> setVoice = new ArrayList<Expression.Voice>();
+		int length = listOfVoice.size();
+		for (int i=0; i<length; i++){
+			Expression.Voice v = new Expression.Voice(listOfVoice.get(i));
+			v.setTokenInVoice(tokenInVoice.get(i));
+		}
+		return setVoice;
+	}
+	
+	private ArrayList<Expression.Section> sectionMaker(ArrayList<Token> tokenList){
+		int length = tokenList.size();
 		ArrayList<Integer> lineIndex = new ArrayList<Integer>();
 		for (int i=0; i<length; i++){
 			if (tokenList.get(i).getType().equals(Token.Type.LINE)){
@@ -33,7 +64,7 @@ public class Parser {
 			int fromIndex = lineIndex.get(j-1) + 1;
 			int toIndex = lineIndex.get(j);
 			ArrayList<Token> section = new ArrayList<Token>();
-			section = (ArrayList<Token>) this.tokenList.subList(fromIndex, toIndex);
+			section = (ArrayList<Token>) tokenList.subList(fromIndex, toIndex);
 			listOfExpression.add(new Expression.Section(section));
 		}
 		return listOfExpression;
@@ -344,7 +375,7 @@ public class Parser {
 		} 
 	}
 	
-	public List<Expression.Section> getParsedList(){
+	public List<Expression.Voice> getParsedList(){
 		return this.parsedList;
 	}
 }

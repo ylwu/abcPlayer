@@ -7,6 +7,41 @@ public interface Expression {
 	public String getType();
 	public String toString();
 	
+	public class Voice implements Expression {
+		
+		private String voiceName;
+		private ArrayList<Token> tokenInVoice;
+		private ArrayList<Expression.Section> sections;
+		
+		public Voice(String string){
+			this.voiceName = string;
+		}
+		
+		public String getType(){
+			return "Voice";
+		}
+		
+		public String toString(){
+			return voiceName;
+		}
+		
+		public void setTokenInVoice(ArrayList<Token> tokenInVoice){
+			this.tokenInVoice = tokenInVoice;
+		}
+		
+		public void setSections(ArrayList<Expression.Section> sections){
+			this.sections = sections;
+		}
+		
+		public ArrayList<Token> getTokenInVoice (){
+			return this.tokenInVoice;
+		}
+		
+		public ArrayList<Expression.Section> getSections(){
+			return this.sections;
+		}
+	}
+	
     public class Section implements Expression {
         
         private ArrayList<Token> tokenSection;
@@ -40,6 +75,9 @@ public interface Expression {
     	private Expression octave;
     	private Expression length;
     	
+    	public SingleNote(){
+    	}
+    	
     	public String getType(){
     		return "SingleNote";
     	}
@@ -63,6 +101,22 @@ public interface Expression {
     	public void setLength(Expression length){
     		this.length = length;
     	}
+    	
+    	public Expression getAccidental(){
+    		return this.accidental;
+    	}
+    	
+    	public Expression getNote(){
+    		return this.note;
+    	}
+    	
+    	public Expression getOctave(){
+    		return this.octave;
+    	}
+    	
+    	public Expression getLength(){
+    		return this.length;
+    	}
     }
     
     public class Chord implements Expression {
@@ -71,6 +125,9 @@ public interface Expression {
     	private ArrayList<Expression> notes;
     	private Expression octave;
     	private Expression length;
+    	
+    	public Chord(){
+    	}
     	
     	public String getType(){
     		return "Chord";
@@ -98,6 +155,22 @@ public interface Expression {
     	
     	public void setLength(Expression length){
     		this.length = length;
+    	}
+    	
+    	public Expression getAccidental(){
+    		return this.accidental;
+    	}
+    	
+    	public ArrayList<Expression> getNote(){
+    		return this.notes;
+    	}
+    	
+    	public Expression getOctave(){
+    		return this.octave;
+    	}
+    	
+    	public Expression getLength(){
+    		return this.length;
     	}
     }
 
@@ -274,24 +347,6 @@ public interface Expression {
 		
 		public String getType(){
 			return "Length";
-		}		
-
-		public String toString(){
-			return this.value;
-		}
-	}
-	
-	public class Voice implements Expression {
-		
-		private Token thisToken;
-		private final String value = this.thisToken.toString();
-		
-		public Voice(Token token){
-			this.thisToken = token;
-		}
-		
-		public String getType(){
-			return "Voice";
 		}		
 
 		public String toString(){
