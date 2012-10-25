@@ -10,7 +10,7 @@ public class Parser {
 		this.tokenList = lexer.getTokenList();
 		this.lexer = lexer;
         this.header = lexer.getHeader();
-		this.parsedList = this.voiceMaker();		
+		this.parsedList = voiceMaker();		
 		for (Expression.Voice e: parsedList){
 			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
 			ArrayList<Expression.Section> sections = e.getSections();
@@ -40,8 +40,9 @@ public class Parser {
 		}
 		for (Token token: tokenList){
 			if (token.getType().equals(Token.Type.VOICE)){
+			    
 				String voiceName = token.toString();
-				tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime); //voiceOfTime is never modified!
+				//tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime); //voiceOfTime is never modified!
 				if (listOfVoice.contains(voiceName)){ 
 					listOfTime = tokenInVoice.get(listOfVoice.indexOf(voiceName));
 				} else {
