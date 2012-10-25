@@ -320,20 +320,9 @@ public class Parser {
 		}
 		if (chord) {
 			ArrayList<Expression> notes = new ArrayList<Expression>();
-			Expression.Chord note = new Expression.Chord();
-			for (Token token: noteToken){
-				if (token.getType().equals(Token.Type.ACCIDENTAL)){
-					note.setAccidental(setTokenExpression(token));
-				} else if (token.getType().equals(Token.Type.NOTE)){
-					notes.add(setTokenExpression(token));
-				} else if (token.getType().equals(Token.Type.OCTAVE)){
-					note.setOctave(setTokenExpression(token));
-				} else if (token.getType().equals(Token.Type.LENGTH)){
-					note.setLength(setTokenExpression(token));
-				} else {}
-			}
-			note.setNote(notes);
-			return note;
+			Expression.Chord c = new Expression.Chord();
+			c.setNote(notes);
+			return c;
 		} else {
 			Expression.SingleNote note = new Expression.SingleNote();
 			for (Token token: noteToken){
