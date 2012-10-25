@@ -48,6 +48,39 @@ public interface Expression {
 		}
 	}
 	
+	public class MajorSection implements Expression {
+		private ArrayList<Token> tokenSection;
+		private ArrayList<Expression> sections;
+		
+        public MajorSection(ArrayList<Token> l){
+            this.tokenSection = l;
+        }
+		
+		public String getType(){
+            return "MajorSection";
+        }
+        
+        public String toString(){
+            StringBuffer s = new StringBuffer();
+            for (Expression e : sections){
+                s.append(e.toString());
+            }
+            return "MajorSection( " + s + ") ";
+        }
+		
+        public ArrayList<Token> getTokenSection(){
+            return tokenSection;
+        }
+        
+        public void setNotes(ArrayList<Expression> listSection){
+        	this.sections = sections;
+        }
+        
+        public ArrayList<Expression> getSections(){
+            return this.sections;
+        }
+	}
+	
     public class Section implements Expression {
         
         private ArrayList<Token> tokenSection;

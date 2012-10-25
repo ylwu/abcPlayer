@@ -61,6 +61,10 @@ public class Parser {
 		return setVoice;
 	}
 	
+	private ArrayList<Expression.MajorSection> majorSectionMaker (ArrayList<Token> tokenList){
+		
+	}
+	
 	private ArrayList<Expression.Section> sectionMaker(ArrayList<Token> tokenList){
 		int length = tokenList.size();
 		ArrayList<Integer> lineIndex = new ArrayList<Integer>();
