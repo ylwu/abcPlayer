@@ -178,7 +178,7 @@ public interface Expression {
     		for (Expression note: this.notes){
     			notes += note.toString();
     		}
-    		return "Chord" +"["+notes+"]";
+    		return "Chord" +"["+notes+"] ";
     	}
     	
     	
