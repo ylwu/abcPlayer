@@ -53,16 +53,21 @@ public class Feeder {
 	 * Takes the Expression object from this.parser and recursively calls itself on each node.
 	 */
 	public void addAll(){
-	    int vCount = -1;
+	    int vCount = 0;
 	    double fill = 0;
 	    this.curTick = new int[this.parser.header.V.size()];
-	    HashMap vMap = new HashMap();
+	    HashMap vMap = new HashMap(this.curTick.length);
 		for (Voice v: this.parser.getParsedList()){
-		    vCount++;
-		    curVoice = vCount;
+		    if (!vMap.containsKey(v.toString())){
+		        vMap.put(v.toString(), vCount);
+		        vCount++;
+		    }
+		    curVoice = (Integer) vMap.get(v.toString());
 		    for (Section s: v.getSections()){
+		        System.out.println("looping section");
 		        fill = 0;
 		        for (Expression e: s.getNotes()){
+		            System.out.println("looping notes");
 		            if (e.getType().equals("SingleNote")){
 		                feedNote((SingleNote)e);
 		                curTick[curVoice] += (int)Math.round((((SingleNote)e).getLength())/this.defLen*12);
