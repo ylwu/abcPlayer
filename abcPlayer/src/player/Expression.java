@@ -10,6 +10,7 @@ public interface Expression {
     public class Section implements Expression {
         
         private ArrayList<Token> tokenSection;
+        private ArrayList<Expression> notes;
         
         public Section(ArrayList<Token> l){
             this.tokenSection = l;
@@ -26,30 +27,84 @@ public interface Expression {
         public ArrayList<Token> getTokenSection(){
             return tokenSection;
         }
+        
+        public void setNotes(ArrayList<Expression> listNotes){
+        	this.notes = listNotes;
+        }
     }
-	
-	public class Line implements Expression {
-		
-		private Token thisToken;
-		private final String value = this.thisToken.getValue();
-		
-		public Line(Token token){
-			this.thisToken = token;
-		}
-		
-		public String getType(){
-			return "Line";
-		}		
-
-		public String toString(){
-			return this.value;
-		}
-	}
+    
+    public class SingleNote implements Expression {
+    	
+    	private Expression accidental;
+    	private Expression note;
+    	private Expression octave;
+    	private Expression length;
+    	
+    	public String getType(){
+    		return "SingleNote";
+    	}
+    	
+    	public String toString(){
+    		return accidental.toString()+note.toString()+octave.toString()+length.toString();
+    	}
+    	
+    	public void setAccidental(Expression accidental){
+    		this.accidental = accidental;
+    	}
+    	
+    	public void setNote(Expression note){
+    		this.note = note;
+    	}
+    	
+    	public void setOctave(Expression octave){
+    		this.octave = octave;
+    	}
+    	
+    	public void setLength(Expression length){
+    		this.length = length;
+    	}
+    }
+    
+    public class Chord implements Expression {
+    	
+    	private Expression accidental;
+    	private ArrayList<Expression> notes;
+    	private Expression octave;
+    	private Expression length;
+    	
+    	public String getType(){
+    		return "Chord";
+    	}
+    	
+    	public String toString(){
+    		String notes = "";
+    		for (Expression note: this.notes){
+    			notes += note.toString();
+    		}
+    		return accidental.toString()+"["+notes+"]"+octave.toString()+length.toString();
+    	}
+    	
+    	public void setAccidental(Expression accidental){
+    		this.accidental = accidental;
+    	}
+    	
+    	public void setNote(ArrayList<Expression> notes){
+    		this.notes = notes;
+    	}
+    	
+    	public void setOctave(Expression octave){
+    		this.octave = octave;
+    	}
+    	
+    	public void setLength(Expression length){
+    		this.length = length;
+    	}
+    }
 
 	public class Accidental implements Expression {
 
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public Accidental(Token token){
 			this.thisToken = token;
@@ -67,7 +122,7 @@ public interface Expression {
 	public class Note implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public Note(Token token){
 			this.thisToken = token;
@@ -85,7 +140,7 @@ public interface Expression {
 	public class Octave implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public Octave(Token token){
 			this.thisToken = token;
@@ -103,7 +158,7 @@ public interface Expression {
 	public class LeftBra implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public LeftBra(Token token){
 			this.thisToken = token;
@@ -121,7 +176,7 @@ public interface Expression {
 	public class RightBra implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public RightBra(Token token){
 			this.thisToken = token;
@@ -139,7 +194,7 @@ public interface Expression {
 	public class Duplet implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public Duplet(Token token){
 			this.thisToken = token;
@@ -157,7 +212,7 @@ public interface Expression {
 	public class Triplet implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public Triplet(Token token){
 			this.thisToken = token;
@@ -175,7 +230,7 @@ public interface Expression {
 	public class Quadruplet implements Expression {
 
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public Quadruplet(Token token){
 			this.thisToken = token;
@@ -190,28 +245,10 @@ public interface Expression {
 		}
 	}
 	
-	public class Colon implements Expression {
-		
-		private Token thisToken;
-		private final String value = this.thisToken.getValue();
-		
-		public Colon(Token token){
-			this.thisToken = token;
-		}
-		
-		public String getType(){
-			return "Colon";
-		}		
-
-		public String toString(){
-			return this.value;
-		}
-	}
-	
 	public class Rest implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public Rest(Token token){
 			this.thisToken = token;
@@ -229,7 +266,7 @@ public interface Expression {
 	public class Length implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public Length(Token token){
 			this.thisToken = token;
@@ -247,7 +284,7 @@ public interface Expression {
 	public class Voice implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public Voice(Token token){
 			this.thisToken = token;
@@ -262,44 +299,9 @@ public interface Expression {
 		}
 	}
 	
-	public class AltOne implements Expression {
-		private Token thisToken;
-		private final String value = this.thisToken.getValue();
-		
-		public AltOne(Token token){
-			this.thisToken = token;
-		}
-		
-		public String getType(){
-			return "AltOne";
-		}		
-
-		public String toString(){
-			return this.value;
-		}
-	}
-	
-	public class AltTwo implements Expression {
-		
-		private Token thisToken;
-		private final String value = this.thisToken.getValue();
-		
-		public AltTwo(Token token){
-			this.thisToken = token;
-		}
-		
-		public String getType(){
-			return "AltTwo";
-		}		
-
-		public String toString(){
-			return this.value;
-		}
-	}
-	
 	public class Space implements Expression {
 		private Token thisToken;
-		private final String value = this.thisToken.getValue();
+		private final String value = this.thisToken.toString();
 		
 		public Space(Token token){
 			this.thisToken = token;

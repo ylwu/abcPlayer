@@ -10,7 +10,10 @@ public class Parser {
 	public Parser(Lexer lexer) {
 		this.tokenList = lexer.getTokenList();
 		ArrayList<Expression.Section> intermediateList= sectionMaker();
-		ArrayList<Expression.Section> notNotedList = repeatedSection(intermediateList);
+		this.parsedList= repeatedSection(intermediateList);
+		for (Expression.Section sect: this.parsedList) {
+			sectionToNotes(sect);
+		}
 	}
 	
 	private List<Token> tokenList;
@@ -158,17 +161,165 @@ public class Parser {
 	    return false;
 	}
 	
-	private List<Expression.Note> createNote (Expression.Section sect){
+	private void sectionToNotes (Expression.Section sect){
 	    ArrayList<Token> tokenSection = sect.getTokenSection();
+	    int count = 0;
+    	boolean duplet = false;
+    	boolean triplet = false;
+    	boolean quadruplet = false;
+    	int pletCount = 0;
+	    ArrayList<Expression> listNote = new ArrayList<Expression>();
+	    ArrayList<Token> noteToken = new ArrayList<Token>();
 	    for (Token token: tokenSection){
-	        
+	    	int i = typeHashCode(token.getType());
+	    	if (token.getType().equals(Token.Type.DUPLET)){
+	    		duplet = true;
+	    	} else if (duplet){
+	    		if (i < count){
+					pletCount++;
+					count = 0;
+			       	if (pletCount >= 2){
+			       		duplet = false;
+			       		listNote.addAll(makePlet(noteToken));
+			       		noteToken = new ArrayList<Token>();
+			       	} else {
+			       		noteToken.add(token);
+			       	}
+				} else {
+			       	count = i;
+			       	noteToken.add(token);
+				}
+	    	} else if (token.getType().equals(Token.Type.TRIPLET)){
+	    		triplet = true;
+	    	} else if (triplet) {
+	    		if (i < count){
+					pletCount++;
+					count = 0;
+			       	if (pletCount >= 3){
+			       		triplet = false;
+			       		listNote.addAll(makePlet(noteToken));
+			       		noteToken = new ArrayList<Token>();
+			       	} else {
+			       		noteToken.add(token);
+			       	}
+				} else {
+			       	count = i;
+			       	noteToken.add(token);
+				}
+	    	} else if (token.getType().equals(Token.Type.QUADRUPLET)||quadruplet){
+	    		quadruplet = true;
+	    	} else if (quadruplet) {
+	    		if (i < count){
+					pletCount++;
+					count = 0;
+			       	if (pletCount >= 4){
+			       		quadruplet = false;
+			       		listNote.addAll(makePlet(noteToken));
+			       		noteToken = new ArrayList<Token>();
+			       	} else {
+			       		noteToken.add(token);
+			       	}
+				} else {
+			       	count = i;
+			       	noteToken.add(token);
+				}
+	    	} else {
+				if (i < count){
+			       	listNote.add(makeNote(noteToken));
+			       	noteToken = new ArrayList<Token>();
+			       	noteToken.add(token);
+			       	count = 0;
+				} else {
+			       	count = i;
+			       	noteToken.add(token);
+				}
+	    	}
+	    	listNote.addAll(makePlet(noteToken));
 	    }
+	    sect.setNotes(listNote);
+	}
+	
+	private int typeHashCode(Token.Type type){
+		if (type.equals(Token.Type.ACCIDENTAL)){
+			return 0;
+		} else if (type.equals(Token.Type.NOTE)||
+				type.equals(Token.Type.REST)||
+				type.equals(Token.Type.LEFTBRA)||
+				type.equals(Token.Type.RIGHTBRA)){
+			return 1;
+		} else if (type.equals(Token.Type.OCTAVE)){
+			return 2;
+		} else if (type.equals(Token.Type.LENGTH)){
+			return 3;
+		} else {
+			return 20;
+		}
+	}
+	
+	private Expression makeNote(ArrayList<Token> noteToken){
+		boolean chord = false;
+		for (Token token: noteToken){
+			if (token.getType().equals(Token.Type.LEFTBRA)){
+				chord = true;
+			}
+		}
+		if (chord) {
+			ArrayList<Expression> notes = new ArrayList<Expression>();
+			Expression.Chord note = new Expression.Chord();
+			for (Token token: noteToken){
+				if (token.getType().equals(Token.Type.ACCIDENTAL)){
+					note.setAccidental(setTokenExpression(token));
+				} else if (token.getType().equals(Token.Type.NOTE)){
+					notes.add(setTokenExpression(token));
+				} else if (token.getType().equals(Token.Type.OCTAVE)){
+					note.setOctave(setTokenExpression(token));
+				} else if (token.getType().equals(Token.Type.LENGTH)){
+					note.setLength(setTokenExpression(token));
+				} else {}
+			}
+			note.setNote(notes);
+			return note;
+		} else {
+			Expression.SingleNote note = new Expression.SingleNote();
+			for (Token token: noteToken){
+				if (token.getType().equals(Token.Type.ACCIDENTAL)){
+					note.setAccidental(setTokenExpression(token));
+				} else if (token.getType().equals(Token.Type.NOTE)){
+					note.setNote(setTokenExpression(token));
+				} else if (token.getType().equals(Token.Type.OCTAVE)){
+					note.setOctave(setTokenExpression(token));
+				} else if (token.getType().equals(Token.Type.LENGTH)){
+					note.setLength(setTokenExpression(token));
+				} else {}
+			}
+			return note;
+		}
+	}
+	
+	private ArrayList<Expression> makePlet(ArrayList<Token> noteToken){
+		int count = 0;
+		ArrayList<Token> singleNoteToken = new ArrayList<Token>();
+		ArrayList<Expression> listSingleNote = new ArrayList<Expression>();
+		for (Token token: noteToken){
+			int i = typeHashCode(token.getType());
+			if (i < count){
+				Expression singleNote = makeNote(singleNoteToken);
+				listSingleNote.add(singleNote);
+				singleNoteToken = new ArrayList<Token>();
+				singleNoteToken.add(token);
+		       	count = 0;
+			} else {
+		       	count = i;
+		       	singleNoteToken.add(token);
+			}
+		}
+		Expression singleNote = makeNote(singleNoteToken);
+		listSingleNote.add(singleNote);
+		return listSingleNote;
 	}
 	
 	private Expression setTokenExpression (Token token){
-		if (token.getType().equals(Token.Type.LINE)){
-			return new Expression.Line(token);
-		} else if (token.getType().equals(Token.Type.ACCIDENTAL)){
+		if (token.getType().equals(Token.Type.ACCIDENTAL)){
 			return new Expression.Accidental(token);
 		} else if (token.getType().equals(Token.Type.NOTE)){
 			return new Expression.Note(token);
@@ -184,18 +335,10 @@ public class Parser {
 			return new Expression.Triplet(token);
 		} else if (token.getType().equals(Token.Type.QUADRUPLET)){
 			return new Expression.Quadruplet(token);
-		} else if (token.getType().equals(Token.Type.COLON)){
-			return new Expression.Colon(token);
 		} else if (token.getType().equals(Token.Type.REST)){
 			return new Expression.Rest(token);
 		} else if (token.getType().equals(Token.Type.LENGTH)){
 			return new Expression.Length(token);
-		} else if (token.getType().equals(Token.Type.VOICE)){
-			return new Expression.Voice(token);
-		} else if (token.getType().equals(Token.Type.ALTONE)){
-			return new Expression.AltOne(token);
-		} else if (token.getType().equals(Token.Type.ALTTWO)){
-			return new Expression.AltTwo(token);
 		} else {
 			return new Expression.Space(token);
 		} 
