@@ -86,7 +86,7 @@ public class Feeder {
 	 * @throws NumberFormatException 
 	 */
 	private void headerToFields() throws NumberFormatException, MidiUnavailableException, InvalidMidiDataException{
-	    Header header = this.parser.lexer.header;
+	    Header header = this.parser.header;
         if (header.L != null){
             this.defLen = lengthToNumber(header.L);
         }else throw new RuntimeException("Illegal header input");
@@ -262,21 +262,6 @@ public class Feeder {
         }
         return N / D;
     }
-	
-	private class MusicVisitor implements Visitor{
-	    public MusicVisitor(){
-	        
-	    }
-	    public void onVoice(Voice voice){
-
-	    }
-	    public void onNote(Note note){
-	        
-	    }
-	    public void onChord(Chord chord){
-	        
-	    }
-	}
 	
 
 }
