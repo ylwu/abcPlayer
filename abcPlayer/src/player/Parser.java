@@ -29,7 +29,6 @@ public class Parser {
 	private ArrayList<Expression.Voice> voiceMaker(){
 		ArrayList<String> listOfVoice = new ArrayList<String>();
 		ArrayList<ArrayList<Token>> tokenInVoice = new ArrayList<ArrayList<Token>>();
-		String voiceOfTime = "";
 		ArrayList<Token> listOfTime = new ArrayList<Token>();
 		if (!tokenList.get(0).getType().equals(Token.Type.VOICE)){
 		    Expression.Voice v = new Expression.Voice("");
@@ -42,11 +41,10 @@ public class Parser {
 				if (token.getType().equals(Token.Type.VOICE)){	    
 					String voiceName = token.toString();
 					if (!listOfVoice.equals("")){
-						tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime);
+						tokenInVoice.add(listOfTime);
 						listOfTime = new ArrayList<Token>();
 					} 
 					listOfVoice.add(voiceName);
-					voiceOfTime = voiceName;
 				} else {
 					listOfTime.add(token);
 				}
