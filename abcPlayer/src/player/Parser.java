@@ -391,8 +391,10 @@ public class Parser {
     		listNote.addAll(makeTriplet(noteToken));
     	} else if (quadruplet) {
     		listNote.addAll(makeQuadruplet(noteToken));
-    	} else {
-    		listNote.add(makeNote(noteToken));
+    	} else if (chord) {}
+    	  else {
+    	    if (noteToken.size() == 0){}
+    	    else listNote.add(makeNote(noteToken));
     	}
 	    sect.setNotes(listNote);
 	}
