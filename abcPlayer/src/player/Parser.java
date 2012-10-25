@@ -98,7 +98,7 @@ public class Parser {
             if (tokenSection.get(1).getType().equals(Token.Type.COLON)){
                 rStart.add(i);
                 System.out.println("+rStart "+tokenSection.get(1).getType());
-            }else if (tokenSection.get(0).getType().equals(Token.Type.ALTONE)){
+            }else if (tokenSection.get(1).getType().equals(Token.Type.ALTONE)){
                 rAlt.add(i);
                 System.out.println("+rAlt");
             }
@@ -117,21 +117,18 @@ public class Parser {
             ArrayList<Integer> rTemp = new ArrayList<Integer>(Arrays.asList(0));
             rStart.addAll(0, rTemp);
         }
-        
         ArrayList<Section> tpl = new ArrayList<Section>();
         for (Section s: list.subList(0, rStart.get(0))){
             tpl.add(s);
         }
         outList.addAll(tpl);
-        //list.removeAll(tpl);
         
         while (!rStart.isEmpty()){
             if (!rAlt.isEmpty()){
                 if ((rAlt.get(0)>rStart.get(0)) && (rAlt.get(0)<=rEnd.get(0))){
                     
                     outList.addAll(list.subList(rStart.get(0),  rEnd.get(0)+1));
-                    outList.addAll(list.subList(rStart.get(0), rAlt.get(0)+1));
-                    //list.removeAll(list.subList(rStart.get(0),  rEnd.get(0)));
+                    outList.addAll(list.subList(rStart.get(0), rAlt.get(0)));
                     rStart.remove(0);
                     lastEnd=rEnd.get(0)+1;
                     rEnd.remove(0);
@@ -139,7 +136,6 @@ public class Parser {
                 }else{
                     outList.addAll(list.subList(rStart.get(0),  rEnd.get(0)+1));
                     outList.addAll(list.subList(rStart.get(0),  rEnd.get(0)+1));
-                    //list.removeAll(list.subList(rStart.get(0),  rEnd.get(0)));
                     rStart.remove(0);
                     lastEnd=rEnd.get(0)+1;
                     rEnd.remove(0);
@@ -147,7 +143,6 @@ public class Parser {
             }else{
                 outList.addAll(list.subList(rStart.get(0),  rEnd.get(0)+1));
                 outList.addAll(list.subList(rStart.get(0),  rEnd.get(0)+1));
-                //list.removeAll(list.subList(rStart.get(0),  rEnd.get(0)));
                 rStart.remove(0);
                 lastEnd=rEnd.get(0)+1;
                 rEnd.remove(0);
@@ -155,109 +150,7 @@ public class Parser {
         }
         outList.addAll(list.subList(lastEnd, list.size()));
         return outList;
-        
         }
-	
-	private ArrayList<Expression.Section> oldrepeatedSection(List<Expression.Section> list) {
-	    boolean repeat = false;
-	    boolean altOne = false;
-	    ArrayList<Expression.Section> newList = new ArrayList<Expression.Section>();
-	    ArrayList<Expression.Section> repeatedSection = new ArrayList<Expression.Section>();
-	    ArrayList<Expression.Section> altOneSection = new ArrayList<Expression.Section>();
-	    for (Expression.Section e: list){
-	        ArrayList<Token> tokenSection =
-	                e.getTokenSection();
-	        int length = tokenSection.size();
-	        int lengthNewList = newList.size();
-	        if (altTwo(e)){
-	            ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
-                Expression.Section newE = new Expression.Section(newTokenSection); 
-                newList.add(newE);
-	        } else if (altOne) {
-	            if (endRepeat(e)){
-                    ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
-                    Expression.Section newE = new Expression.Section(newTokenSection); 
-                    newList.addAll(repeatedSection);
-                    newList.addAll(altOneSection);
-                    newList.add(newE);
-                    repeatedSection = new ArrayList<Expression.Section>();
-                    altOneSection = new ArrayList<Expression.Section>();
-                    repeat = false;
-                    altOne = false;
-	            } else {
-	                altOneSection.add(e);
-	            }
-	        } else {
-    	        if (!repeat) {
-    	            repeat = beginRepeat(e);
-    	            if (repeat) {
-    	                if (endRepeat(e)){
-    	                    ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length-1);
-                            Expression.Section newE = new Expression.Section(newTokenSection); 
-    	                    newList.add(newE);
-    	                    newList.add(newE);
-    	                } else {
-    	                    ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
-    	                    Expression.Section newE = new Expression.Section(newTokenSection); 
-    	                    newList.add(newE);
-    	                    repeatedSection.add(newE);
-    	                }
-    	            } else {
-    	                if (altOne(e)) {
-    	                    if (endRepeat(e)){
-    	                        ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length-1);
-    	                        Expression.Section newE = new Expression.Section(newTokenSection); 
-    	                        newList.add(newE);
-    	                        newList.add(newList.get(lengthNewList-1));
-    	                    } else {
-    	                        altOne = true;
-    	                        ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
-                                Expression.Section newE = new Expression.Section(newTokenSection);
-                                altOneSection.add(newE);
-                                repeatedSection.add(newList.get(lengthNewList-1));
-    	                    }
-    	                } else if (endRepeat(e)) {
-    	                    ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
-    	                    Expression.Section newE = new Expression.Section(newTokenSection);
-    	                    newList.add(newE);
-    	                    newList.add(newList.get(lengthNewList-1));
-    	                    newList.add(newE);
-    	                } else {
-    	                    newList.add(e);
-    	                }
-    	            }
-    	        } else {
-    	            if (altOne(e)) {
-                        if (endRepeat(e)){
-                            ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
-                            Expression.Section newE = new Expression.Section(newTokenSection); 
-                            newList.add(newE);
-                            newList.addAll(repeatedSection);
-                            repeatedSection = new ArrayList<Expression.Section>();
-                            repeat = false;
-                        } else {
-                            altOne = true;
-                            ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(1, length);
-                            Expression.Section newE = new Expression.Section(newTokenSection);
-                            altOneSection.add(newE);
-                        }
-    	            } else if (endRepeat(e)){
-    	                ArrayList<Token> newTokenSection = (ArrayList<Token>) e.getTokenSection().subList(0, length-1);
-                        Expression.Section newE = new Expression.Section(newTokenSection); 
-    	                newList.add(newE);
-    	                newList.addAll(repeatedSection);
-    	                newList.add(newE);
-    	                repeatedSection = new ArrayList<Expression.Section>();
-    	                repeat = false;
-    	            } else {
-    	                newList.add(e);
-    	                repeatedSection.add(e);
-    	            }
-    	        }
-    	    }
-	    }
-	    return newList;
-	}
 	
 	private boolean beginRepeat(Expression.Section e){
 	    if (e.getTokenSection().get(0).getType().equals(Token.Type.COLON)) return true;
