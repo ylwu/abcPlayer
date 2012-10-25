@@ -10,7 +10,16 @@ public class ParserTest {
     @Test
     public void basicTest() throws IOException{
         Lexer l = new Lexer();
-        l.tokenize("piece1.abc");
+        l.tokenize("lexer_legal_voices.abc");
+        System.out.println(l.toString());
+        Parser p = new Parser(l);
+        System.out.println(p.toString());
+    }
+    
+    @Test
+    public void basicTest2() throws IOException{
+        Lexer l = new Lexer();
+        l.tokenize("piece2.abc");
         Parser p = new Parser(l);
         System.out.println(p.toString());
     }

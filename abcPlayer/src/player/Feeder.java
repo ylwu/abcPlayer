@@ -2,6 +2,7 @@ package player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -52,22 +53,29 @@ public class Feeder {
 	 * Takes the Expression object from this.parser and recursively calls itself on each node.
 	 */
 	public void addAll(){
-	    int vCount = -1;
+	    int vCount = 0;
 	    double fill = 0;
-	    this.curTick = new int[this.parser.getParsedList().size()];
+	    //this.curTick = new int[this.parser.header.V.size()];
+	    HashMap vMap = new HashMap(this.curTick.length);
 		for (Voice v: this.parser.getParsedList()){
-		    vCount++;
-		    curVoice = vCount;
+		    if (!vMap.containsKey(v.toString())){
+		        vMap.put(v.toString(), vCount);
+		        vCount++;
+		    }
+		    curVoice = (Integer) vMap.get(v.toString());
 		    for (Section s: v.getSections()){
+		        System.out.println("looping section");
 		        fill = 0;
 		        for (Expression e: s.getNotes()){
+		            System.out.println("looping notes");
 		            if (e.getType().equals("SingleNote")){
 		                feedNote((SingleNote)e);
-		                curTick[curVoice] += (int)Math.round((((SingleNote)e).getLength())/this.defLen*12);
+		                curTick[curVoice] += (int)Math.round((((SingleNote)e).getLength())*12);
+		                System.out.println((int)Math.round((((SingleNote)e).getLength())*12));
 		                fill += ((SingleNote)e).getLength();
 		            }else if(e.getType().equals("Chord")){
 		                feedChord((Chord)e);
-		                curTick[curVoice] += (int)Math.round((((SingleNote)(((Chord)e).getNote().get(0))).getLength())/this.defLen*12);
+		                curTick[curVoice] += (int)Math.round((((SingleNote)(((Chord)e).getNote().get(0))).getLength())*12);
 		                fill += (((SingleNote)(((Chord)e).getNote().get(0))).getLength());
 		            }
 		        }
@@ -97,6 +105,7 @@ public class Feeder {
 	    Header header = this.parser.header;
         if (header.L != null){
             this.defLen = lengthToNumber(header.L);
+            System.out.println(this.defLen);
         }else throw new RuntimeException("Illegal header input");
 		if (header.Q != null){
 		    this.player = new SequencePlayer(Integer.parseInt(header.Q)*(int)Math.round(this.defLen/0.25), 12);
@@ -210,10 +219,14 @@ public class Feeder {
                 break;
     	    }
 	    }
+	    if (note.toLowerCase()==note){
+	        octave+=12;
+	        note=note.toUpperCase();
+	    }
 		Pitch pitch = new Pitch(note.charAt(0)).transpose(transpose).transpose(octave);
 		this.player.addNote(pitch.toMidiNote(),
 		        curTick[curVoice], 
-		        (int)Math.round(length/this.defLen*12));
+		        (int)Math.round(length*this.defLen*12));
 	}
 	
 	/**

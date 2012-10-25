@@ -12,7 +12,7 @@ import org.junit.Test;
 
 public class FeederTest {
 
-    @Test
+    //@Test
     public void piece1Test() throws MidiUnavailableException, InvalidMidiDataException, IOException{
         Lexer lexer = new Lexer();
         lexer.tokenize("piece1.abc");
@@ -27,10 +27,11 @@ public class FeederTest {
         Lexer lexer = new Lexer();
         lexer.tokenize("piece2.abc");
         Feeder feeder = new Feeder(new Parser(lexer));
+        feeder.addAll();
         feeder.play();
     }
     
-    @Test
+    //@Test
     public void inventionTest() throws MidiUnavailableException, InvalidMidiDataException, IOException{
         Lexer lexer = new Lexer();
         lexer.tokenize("invention.abc");
@@ -38,7 +39,7 @@ public class FeederTest {
         feeder.play();
     }
     
-    @Test(expected = RuntimeException.class)
+   // @Test(expected = RuntimeException.class)
     public void furEliseTest() throws MidiUnavailableException, InvalidMidiDataException, IOException{
         Lexer lexer = new Lexer();
         lexer.tokenize("piece1.abc");
@@ -46,7 +47,7 @@ public class FeederTest {
         feeder.play();
     }
     
-    @Test(expected = IOException.class)
+   // @Test(expected = IOException.class)
     public void noSuchFileTest() throws MidiUnavailableException, InvalidMidiDataException, IOException{
         Lexer lexer = new Lexer();
         lexer.tokenize("idontexist.abc");
