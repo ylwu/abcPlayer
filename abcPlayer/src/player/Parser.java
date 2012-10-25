@@ -15,7 +15,8 @@ public class Parser {
 			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
 			ArrayList<Expression.Section> sections = e.getSections();
 			for (Expression.Section sect: sections){
-				sectionToNotes (sect);
+				System.out.println(sect.getTokenSection().toString());
+				sectionToNotes(sect);
 			}
 		}
 	}
@@ -26,35 +27,31 @@ public class Parser {
 	public Header header;
 	
 	private ArrayList<Expression.Voice> voiceMaker(){
-		ArrayList<String> listOfVoice = header.V;
+		ArrayList<String> listOfVoice = new ArrayList<String>();
 		ArrayList<ArrayList<Token>> tokenInVoice = new ArrayList<ArrayList<Token>>();
 		String voiceOfTime = "";
 		ArrayList<Token> listOfTime = new ArrayList<Token>();
-		
-		if (listOfVoice.size() == 0){
+		if (!tokenList.get(0).getType().equals(Token.Type.VOICE)){
 		    Expression.Voice v = new Expression.Voice("");
 		    v.setTokenInVoice(tokenList);
 		    ArrayList<Expression.Voice> setVoice = new ArrayList<Expression.Voice>();
 		    setVoice.add(v);
 		    return setVoice;
-		}
-		for (Token token: tokenList){
-			if (token.getType().equals(Token.Type.VOICE)){
-			    
-				String voiceName = token.toString();
-				//tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime); //voiceOfTime is never modified!
-				if (listOfVoice.contains(voiceName)){ 
-					listOfTime = tokenInVoice.get(listOfVoice.indexOf(voiceName));
-				} else {
+		} else {
+			for (Token token: tokenList){
+				if (token.getType().equals(Token.Type.VOICE)){	    
+					String voiceName = token.toString();
+					if (!listOfVoice.equals("")){
+						tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime);
+						listOfTime = new ArrayList<Token>();
+					} 
 					listOfVoice.add(voiceName);
-					listOfTime = new ArrayList<Token>();
-					tokenInVoice.add(listOfTime); //So, content in voice 1 will be added to voice 2
+				} else {
+					listOfTime.add(token);
 				}
-			} else {
-				listOfTime.add(token);
 			}
 		}
-		tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime);
+		tokenInVoice.add(listOfTime);
 		ArrayList<Expression.Voice> setVoice = new ArrayList<Expression.Voice>();
 		int length = listOfVoice.size();
 		for (int i=0; i<length; i++){
