@@ -281,17 +281,17 @@ public class Parser {
 				       	noteToken.add(token);
 					}
 		    	}
-		    	if (duplet) {
-		    		listNote.addAll(makeDuplet(noteToken));
-		    	} else if (triplet) {
-		    		listNote.addAll(makeTriplet(noteToken));
-		    	} else if (quadruplet) {
-		    		listNote.addAll(makeQuadruplet(noteToken));
-		    	} else {
-		    	listNote.add(makeNote(noteToken));
-		    	}
 	    	}
 	    }
+    	if (duplet) {
+    		listNote.addAll(makeDuplet(noteToken));
+    	} else if (triplet) {
+    		listNote.addAll(makeTriplet(noteToken));
+    	} else if (quadruplet) {
+    		listNote.addAll(makeQuadruplet(noteToken));
+    	} else {
+    		listNote.add(makeNote(noteToken));
+    	}
 	    sect.setNotes(listNote);
 	}
 	
