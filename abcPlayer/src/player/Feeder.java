@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import player.Expression.*;
+
 import sound.Pitch;
 import sound.SequencePlayer;
 
@@ -31,9 +33,8 @@ public class Feeder {
 	}
 	
 	/**
-	 * Adds all the expressions into the player.
-	 * Takes the Expression object from this.parser, traverses down each voice and calls
-	 * feedExpression() on each leaf.
+	 * Adds the current expression or all the expressions it contains into the player.
+	 * Takes the Expression object from this.parser and recursively calls itself on each node.
 	 */
 	public void addAll(){
 		
@@ -73,11 +74,11 @@ public class Feeder {
 	}
 	
 	/**
-	 * Takes an Expression object, analyzes its parameters, and input them into the sequence
+	 * Takes an Note object, analyzes its parameters, and input them into the sequence
 	 * player. Utilizes visitor pattern.
-	 * @param exp Object implementing Expression.
+	 * @param exp Note object.
 	 */
-	private void feedExpression(Expression exp){
+	private void feedExpression(Note exp){
 	    double length = exp.length;
 	    int transpose = exp.transpose;
 	    String note;
@@ -159,6 +160,10 @@ public class Feeder {
 		        (int)Math.round(length/this.defLen*12));
 	}
 	
+	private void feedChord(Chord exp){
+	    
+	}
+	
 	/**
 	 * Takes a String representing a key signature of the music piece and tests if it could be in 
 	 * the legal keys defined in enum LegalKeys. 
@@ -201,6 +206,21 @@ public class Feeder {
         }
         return N / D;
     }
+	
+	private class MusicVisitor implements Visitor{
+	    public MusicVisitor(){
+	        
+	    }
+	    public void onVoice(Voice voice){
+	        
+	    }
+	    public void onNote(Note note){
+	        
+	    }
+	    public void onChord(Chord chord){
+	        
+	    }
+	}
 	
 
 }
