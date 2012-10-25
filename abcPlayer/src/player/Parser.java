@@ -174,6 +174,7 @@ public class Parser {
 	}
 	
 	private void sectionToNotes (Expression.Section sect){
+		System.out.println(sect.getTokenSection().toString());
 	    ArrayList<Token> tokenSection = sect.getTokenSection();
 	    int count = 0;
     	boolean duplet = false;
@@ -183,38 +184,53 @@ public class Parser {
     	int pletCount = 0;
 	    ArrayList<Expression> listNote = new ArrayList<Expression>();
 	    ArrayList<Token> noteToken = new ArrayList<Token>();
+	    ArrayList<Token> chordExpression = new ArrayList<Token>();
 	    for (Token token: tokenSection){
-	    	//System.out.println(triplet);
-	    	//System.out.println(token.getType().toString());
+	    	System.out.println(triplet);
 	    	int i = typeHashCode(token.getType());
 		    if(i!=20){	
-		    	if (token.getType().equals(Token.Type.LEFTBRA)){
-		    		chord = true;
-		    	} else if (chord){
-		    		
+		        if (token.getType().equals(Token.Type.LEFTBRA)){
+	                 chord = true;
+	            } else if (chord){
+	                 if (token.getType().equals(Token.Type.RIGHTBRA)){
+	                     chord = false;
+	                     Expression.Chord c = new Expression.Chord();
+	                     ArrayList<Expression> list = makeChord(chordExpression);
+	                     c.setNote(list);
+	                     listNote.add(c);
+	                     chordExpression = new ArrayList<Token>();
+	                 } else  chordExpression.add(token);
 		    	} else if (token.getType().equals(Token.Type.DUPLET)){
 		    		duplet = true;
 		    	} else if (duplet){
-		    		if (i < count){
+		    		if (token.getType().equals(Token.Type.DUPLET) && pletCount == 1){
+		    			listNote.addAll(makeDuplet(noteToken));
+			       		noteToken = new ArrayList<Token>();
+			       		pletCount = 0;
+		    		} else if (i < count){
 						pletCount++;
 						count = 0;
 				       	if (pletCount >= 2){
 				       		duplet = false;
 				       		listNote.addAll(makeDuplet(noteToken));
 				       		noteToken = new ArrayList<Token>();
-				       	} else {
-				       		noteToken.add(token);
-				       	}
-					} else if ((i==1 && count==1)){
-						listNote.add(makeNote(noteToken));
-				       	noteToken = new ArrayList<Token>();
-				       	noteToken.add(token);
+				       	} else noteToken.add(token);
+				    } else if ((i==1 && count==1)){
+						pletCount++;
+						noteToken.add(token);
 				       	count = i;
-		    		} else {
+				    } else {
 				       	count = i;
-				       	noteToken.add(token);
-					}
+				       	noteToken.add(token);}
 		    	} else if (token.getType().equals(Token.Type.TRIPLET)){
+		    		if (triplet){
+		    			if (pletCount == 2){
+		    				listNote.addAll(makeTriplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       		pletCount = 0;
+				       		count = 0;
+		    			}
+		    		}
 		    		triplet = true;
 		    	} else if (triplet) {
 		    		if (i < count){
@@ -229,9 +245,8 @@ public class Parser {
 				       		noteToken.add(token);
 				       	}
 					} else if ((i==1 && count==1)){
-						listNote.add(makeNote(noteToken));
-				       	noteToken = new ArrayList<Token>();
-				       	noteToken.add(token);
+						pletCount++;
+						noteToken.add(token);
 				       	count = i;
 					} else {
 				       	count = i;
@@ -240,7 +255,11 @@ public class Parser {
 		    	} else if (token.getType().equals(Token.Type.QUADRUPLET)||quadruplet){
 		    		quadruplet = true;
 		    	} else if (quadruplet) {
-		    		if (i < count){
+		    		if (token.getType().equals(Token.Type.QUADRUPLET) && pletCount == 3){
+		    			listNote.addAll(makeQuadruplet(noteToken));
+			       		noteToken = new ArrayList<Token>();
+			       		pletCount = 0;
+		    		}else if (i < count){
 						pletCount++;
 						count = 0;
 				       	if (pletCount >= 4){
@@ -267,16 +286,18 @@ public class Parser {
 				       	noteToken.add(token);
 				       	count = 0;
 					} else if ((i==1&&count==1)){
-						listNote.add(makeNote(noteToken));
-				       	noteToken = new ArrayList<Token>();
-				       	noteToken.add(token);
+						pletCount++;
+						noteToken.add(token);
 				       	count = i;
 					} else {
 				       	count = i;
 				       	noteToken.add(token);
 					}
 		    	}
+		        
 	    	}
+		    System.out.println(listNote.toString());
+		    System.out.println(noteToken.toString());
 	    }
     	if (duplet) {
     		listNote.addAll(makeDuplet(noteToken));
@@ -291,6 +312,33 @@ public class Parser {
     	}
 	    sect.setNotes(listNote);
 	}
+	
+	
+	private ArrayList<Expression> makeChord(ArrayList<Token> noteOfToken){
+	     ArrayList<Expression> listNote = new ArrayList<Expression>();
+	     ArrayList<Token> noteToken = new ArrayList<Token>();
+	     int count = 0;
+	     for (Token token: noteOfToken){
+	         int i = typeHashCode(token.getType());
+	         if (i < count){
+	             listNote.add(makeNote(noteToken));
+	             noteToken = new ArrayList<Token>();
+	             noteToken.add(token);
+	             count = 0;
+	         } else if ((i==1&&count==1)){
+	             listNote.add(makeNote(noteToken));
+	             noteToken = new ArrayList<Token>();
+	             noteToken.add(token);
+	             count = i;
+	         } else {
+	             count = i;
+	             noteToken.add(token);
+	         }
+	     }
+	     listNote.add(makeNote(noteToken));
+	     return listNote;
+	    }
+	
 	
 	private int typeHashCode(Token.Type type){
 		if (type.equals(Token.Type.ACCIDENTAL)){
@@ -353,10 +401,36 @@ public class Parser {
 				singleNoteToken = new ArrayList<Token>();
 				singleNoteToken.add(token);
 		       	count = 0;
+			} else if (i==1 && count==1){
+				int length = singleNoteToken.size();
+				Token lastToken = singleNoteToken.get(length-1);
+				if (lastToken.getType().equals(Token.Type.LENGTH)){
+					double newLength = lastToken.getValue()*0.5;
+					Token newLengthToken = new Token(newLength, Token.Type.LENGTH);
+					singleNoteToken.set(length-1, newLengthToken);
+				} else {
+					Token newLengthToken = new Token(0.5, Token.Type.LENGTH);
+					singleNoteToken.add(newLengthToken);
+				}
+				Expression singleNote = makeNote(singleNoteToken);
+				listSingleNote.add(singleNote);
+				singleNoteToken = new ArrayList<Token>();
+				singleNoteToken.add(token);
+		       	count = 1;
 			} else {
 		       	count = i;
 		       	singleNoteToken.add(token);
 			}
+		}
+		int length = singleNoteToken.size();
+		Token lastToken = singleNoteToken.get(length-1);
+		if (lastToken.getType().equals(Token.Type.LENGTH)){
+			double newLength = lastToken.getValue()*0.5;
+			Token newLengthToken = new Token(newLength, Token.Type.LENGTH);
+			singleNoteToken.set(length-1, newLengthToken);
+		} else {
+			Token newLengthToken = new Token(0.5, Token.Type.LENGTH);
+			singleNoteToken.add(newLengthToken);
 		}
 		Expression singleNote = makeNote(singleNoteToken);
 		listSingleNote.add(singleNote);
@@ -385,10 +459,36 @@ public class Parser {
 				singleNoteToken = new ArrayList<Token>();
 				singleNoteToken.add(token);
 		       	count = 0;
+			} else if (i==1 && count==1){
+				int length = singleNoteToken.size();
+				Token lastToken = singleNoteToken.get(length-1);
+				if (lastToken.getType().equals(Token.Type.LENGTH)){
+					double newLength = lastToken.getValue()*(2.0/3);
+					Token newLengthToken = new Token(newLength, Token.Type.LENGTH);
+					singleNoteToken.set(length-1, newLengthToken);
+				} else {
+					Token newLengthToken = new Token(2.0/3, Token.Type.LENGTH);
+					singleNoteToken.add(newLengthToken);
+				}
+				Expression singleNote = makeNote(singleNoteToken);
+				listSingleNote.add(singleNote);
+				singleNoteToken = new ArrayList<Token>();
+				singleNoteToken.add(token);
+		       	count = i;
 			} else {
 		       	count = i;
 		       	singleNoteToken.add(token);
 			}
+		}
+		int length = singleNoteToken.size();
+		Token lastToken = singleNoteToken.get(length-1);
+		if (lastToken.getType().equals(Token.Type.LENGTH)){
+			double newLength = lastToken.getValue()*(2.0/3);
+			Token newLengthToken = new Token(newLength, Token.Type.LENGTH);
+			singleNoteToken.set(length-1, newLengthToken);
+		} else {
+			Token newLengthToken = new Token(2.0/3, Token.Type.LENGTH);
+			singleNoteToken.add(newLengthToken);
 		}
 		Expression singleNote = makeNote(singleNoteToken);
 		listSingleNote.add(singleNote);
@@ -417,10 +517,36 @@ public class Parser {
 				singleNoteToken = new ArrayList<Token>();
 				singleNoteToken.add(token);
 		       	count = 0;
+			} else if (i==1 && count==1){
+				int length = singleNoteToken.size();
+				Token lastToken = singleNoteToken.get(length-1);
+				if (lastToken.getType().equals(Token.Type.LENGTH)){
+					double newLength = lastToken.getValue()*(0.75);
+					Token newLengthToken = new Token(newLength, Token.Type.LENGTH);
+					singleNoteToken.set(length-1, newLengthToken);
+				} else {
+					Token newLengthToken = new Token(0.75, Token.Type.LENGTH);
+					singleNoteToken.add(newLengthToken);
+				}
+				Expression singleNote = makeNote(singleNoteToken);
+				listSingleNote.add(singleNote);
+				singleNoteToken = new ArrayList<Token>();
+				singleNoteToken.add(token);
+		       	count = 1;
 			} else {
 		       	count = i;
 		       	singleNoteToken.add(token);
 			}
+		}
+		int length = singleNoteToken.size();
+		Token lastToken = singleNoteToken.get(length-1);
+		if (lastToken.getType().equals(Token.Type.LENGTH)){
+			double newLength = lastToken.getValue()*(0.75);
+			Token newLengthToken = new Token(newLength, Token.Type.LENGTH);
+			singleNoteToken.set(length-1, newLengthToken);
+		} else {
+			Token newLengthToken = new Token(0.75, Token.Type.LENGTH);
+			singleNoteToken.add(newLengthToken);
 		}
 		Expression singleNote = makeNote(singleNoteToken);
 		listSingleNote.add(singleNote);

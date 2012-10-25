@@ -25,4 +25,12 @@ public class ParserTest {
         System.out.println(p.toString());
     }
     
+    @Test
+    public void basicTest3() throws IOException{
+        Lexer l = new Lexer();
+        l.tokenize("piece1.abc");
+        System.out.println(l.toString());
+        Parser p = new Parser(l);
+        System.out.println(p.toString());
+    }
 }
