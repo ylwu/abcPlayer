@@ -71,11 +71,19 @@ public class Feeder {
 		                fill += (((SingleNote)(((Chord)e).getNote().get(0))).getLength());
 		            }
 		        }
-		        if ((this.defMeter-fill)>=0.05){  // The magic number 0.05 allows some small error buildup.
+		        if ((this.defMeter-fill)>=0.05){  // The unfortunate magic number 0.05 allows some small error buildup caused by float calculation.
 		            throw new RuntimeException("Ain't nobody got time for pickups");
 		        }
 		    }
 		}
+	}
+	
+	/**
+	 * Returns the String that represents the player events.
+	 */
+	@Override
+	public String toString(){
+	    return this.player.toString();
 	}
 	
 	/**
