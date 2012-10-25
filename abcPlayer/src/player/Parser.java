@@ -344,15 +344,15 @@ public class Parser {
 				       	noteToken.add(token);
 					}
 		    	} else {
-					if (i < count){
+					if (i <= count){
 				       	listNote.add(makeNote(noteToken));
 				       	noteToken = new ArrayList<Token>();
 				       	noteToken.add(token);
-				       	count = 0;
-					} else if ((i==1&&count==1)){
-						pletCount++;
-						noteToken.add(token);
 				       	count = i;
+//					} else if ((i==1&&count==1)){
+//						pletCount++;
+//						noteToken.add(token);
+//				       	count = i;
 					} else {
 				       	count = i;
 				       	noteToken.add(token);
