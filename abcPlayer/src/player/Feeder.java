@@ -66,9 +66,10 @@ public class Feeder {
 		    for (Section s: v.getSections()){
 		        fill = 0;
 		        for (Expression e: s.getNotes()){
-		            //System.out.println("looping notes");
+		            
 		            if (e.getType().equals("SingleNote")){
 		                feedNote((SingleNote)e);
+		                System.out.println(e.toString());
 		                curTick[curVoice] += (int)Math.round((((SingleNote)e).getLength())*12);
 		                System.out.println((int)Math.round((((SingleNote)e).getLength())*12));
 		                fill += ((SingleNote)e).getLength();
@@ -141,10 +142,10 @@ public class Feeder {
 	private void feedNote(SingleNote exp){
 	    double length = exp.getLength();
 	    int transpose = exp.getAccidental();
-	    String note;
+	    String note = exp.getNote();
 	    int octave=0;
 	    
-	    note = exp.getNote().toString();
+	    System.out.println("EXPNote: "+note);
 	    if (exp.getOctave() == 1){
 	        octave = 12;
 	    }else if (exp.getOctave() == -1){

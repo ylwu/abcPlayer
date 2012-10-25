@@ -16,6 +16,7 @@ public class Parser {
 			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
 			ArrayList<Expression.Section> sections = e.getSections();
 			for (Expression.Section sect: sections){
+				//System.out.println(sect.getTokenSection().toString());
 				sectionToNotes(sect);
 			}
 		}
@@ -84,35 +85,80 @@ public class Parser {
 		return listOfExpression;
 	}
 	
-	private ArrayList<Expression.Section> basicRepeatedSection(List<Expression.Section> list) {
-	    ArrayList<Integer> rStart = new ArrayList<Integer>();
-	    ArrayList<Integer> rEnd = new ArrayList<Integer>();
-	    ArrayList<Integer> rAlt = new ArrayList<Integer>();
-	    ArrayList<Expression.Section> outList = new ArrayList<Expression.Section>();
-	    for (int i=0; i<list.size(); i++){
+	private ArrayList<Expression.Section> repeatedSection(List<Expression.Section> theList) {
+        ArrayList<Integer> rStart = new ArrayList<Integer>();
+        ArrayList<Integer> rEnd = new ArrayList<Integer>();
+        ArrayList<Integer> rAlt = new ArrayList<Integer>();
+        List<Expression.Section> list = theList;
+        ArrayList<Expression.Section> outList = new ArrayList<Expression.Section>();
+        int lastEnd=-1;
+        for (int i=0; i<list.size(); i++){
             ArrayList<Token> tokenSection = list.get(i).getTokenSection();
-            if (tokenSection.get(0).getType().equals(Token.Type.COLON)){
+            System.out.println("Enter loop "+ Integer.toString(i));
+            if (tokenSection.get(1).getType().equals(Token.Type.COLON)){
                 rStart.add(i);
-            }else if (tokenSection.get(tokenSection.size()-1).getType().equals(Token.Type.COLON)){
-                rEnd.add(i);
+                System.out.println("+rStart "+tokenSection.get(1).getType());
             }else if (tokenSection.get(0).getType().equals(Token.Type.ALTONE)){
                 rAlt.add(i);
-            }else return (ArrayList<Section>) list;
-	    }
-	    if ((rStart.size()>rEnd.size())||(rEnd.size()-rStart.size()>=2)){
-	        throw new RuntimeException("Invalid layout of colons");
-	    }
-	    if (rStart.get(0)>rEnd.get(0)){
-	        ArrayList<Integer> rTemp = new ArrayList<Integer>(Arrays.asList(0));
-	        rStart.addAll(0, rTemp);
-	    }
-	    for (int i=0; i<rStart.size(); i++){
-	        
-	    }
-	    
-	    }
+                System.out.println("+rAlt");
+            }
+            if (tokenSection.get(tokenSection.size()-2).getType().equals(Token.Type.COLON)){
+                rEnd.add(i);
+                System.out.println("+rEnd " +tokenSection.get(tokenSection.size()-2).getType());
+            }
+        }
+        if (rEnd.size()==0){
+            return (ArrayList<Section>)list;
+        }
+        if ((rStart.size()>rEnd.size())||(rEnd.size()-rStart.size()>=2)){
+            throw new RuntimeException("Invalid layout of colons");
+        }
+        if (rStart.get(0)>rEnd.get(0)){
+            ArrayList<Integer> rTemp = new ArrayList<Integer>(Arrays.asList(0));
+            rStart.addAll(0, rTemp);
+        }
+        
+        ArrayList<Section> tpl = new ArrayList<Section>();
+        for (Section s: list.subList(0, rStart.get(0))){
+            tpl.add(s);
+        }
+        outList.addAll(tpl);
+        //list.removeAll(tpl);
+        
+        while (!rStart.isEmpty()){
+            if (!rAlt.isEmpty()){
+                if ((rAlt.get(0)>rStart.get(0)) && (rAlt.get(0)<=rEnd.get(0))){
+                    
+                    outList.addAll(list.subList(rStart.get(0),  rEnd.get(0)+1));
+                    outList.addAll(list.subList(rStart.get(0), rAlt.get(0)+1));
+                    //list.removeAll(list.subList(rStart.get(0),  rEnd.get(0)));
+                    rStart.remove(0);
+                    lastEnd=rEnd.get(0)+1;
+                    rEnd.remove(0);
+                    rAlt.remove(0);
+                }else{
+                    outList.addAll(list.subList(rStart.get(0),  rEnd.get(0)+1));
+                    outList.addAll(list.subList(rStart.get(0),  rEnd.get(0)+1));
+                    //list.removeAll(list.subList(rStart.get(0),  rEnd.get(0)));
+                    rStart.remove(0);
+                    lastEnd=rEnd.get(0)+1;
+                    rEnd.remove(0);
+                }
+            }else{
+                outList.addAll(list.subList(rStart.get(0),  rEnd.get(0)+1));
+                outList.addAll(list.subList(rStart.get(0),  rEnd.get(0)+1));
+                //list.removeAll(list.subList(rStart.get(0),  rEnd.get(0)));
+                rStart.remove(0);
+                lastEnd=rEnd.get(0)+1;
+                rEnd.remove(0);
+            }
+        }
+        outList.addAll(list.subList(lastEnd, list.size()));
+        return outList;
+        
+        }
 	
-	private ArrayList<Expression.Section> repeatedSection(List<Expression.Section> list) {
+	private ArrayList<Expression.Section> oldrepeatedSection(List<Expression.Section> list) {
 	    boolean repeat = false;
 	    boolean altOne = false;
 	    ArrayList<Expression.Section> newList = new ArrayList<Expression.Section>();
@@ -244,21 +290,15 @@ public class Parser {
     	int pletCount = 0;
 	    ArrayList<Expression> listNote = new ArrayList<Expression>();
 	    ArrayList<Token> noteToken = new ArrayList<Token>();
-	    ArrayList<Token> chordExpression = new ArrayList<Token>();
 	    for (Token token: tokenSection){
+	    	//System.out.println(triplet);
+	    	//System.out.println(token.getType().toString());
 	    	int i = typeHashCode(token.getType());
 		    if(i!=20){	
-		        if (token.getType().equals(Token.Type.LEFTBRA)){
-	                 chord = true;
-	            } else if (chord){
-	                 if (token.getType().equals(Token.Type.RIGHTBRA)){
-	                     chord = false;
-	                     Expression.Chord c = new Expression.Chord();
-	                     ArrayList<Expression> list = makeChord(chordExpression);
-	                     c.setNote(list);
-	                     listNote.add(c);
-	                     chordExpression = new ArrayList<Token>();
-	                 } else  chordExpression.add(token);
+		    	if (token.getType().equals(Token.Type.LEFTBRA)){
+		    		chord = true;
+		    	} else if (chord){
+		    		
 		    	} else if (token.getType().equals(Token.Type.DUPLET)){
 		    		duplet = true;
 		    	} else if (duplet){
@@ -269,15 +309,18 @@ public class Parser {
 				       		duplet = false;
 				       		listNote.addAll(makeDuplet(noteToken));
 				       		noteToken = new ArrayList<Token>();
-				       	} else noteToken.add(token);
-				    } else if ((i==1 && count==1)){
+				       	} else {
+				       		noteToken.add(token);
+				       	}
+					} else if ((i==1 && count==1)){
 						listNote.add(makeNote(noteToken));
 				       	noteToken = new ArrayList<Token>();
 				       	noteToken.add(token);
 				       	count = i;
-				    } else {
+		    		} else {
 				       	count = i;
-				       	noteToken.add(token);}
+				       	noteToken.add(token);
+					}
 		    	} else if (token.getType().equals(Token.Type.TRIPLET)){
 		    		triplet = true;
 		    	} else if (triplet) {
@@ -353,33 +396,6 @@ public class Parser {
     	}
 	    sect.setNotes(listNote);
 	}
-	
-	
-	private ArrayList<Expression> makeChord(ArrayList<Token> noteOfToken){
-	     ArrayList<Expression> listNote = new ArrayList<Expression>();
-	     ArrayList<Token> noteToken = new ArrayList<Token>();
-	     int count = 0;
-	     for (Token token: noteOfToken){
-	         int i = typeHashCode(token.getType());
-	         if (i < count){
-	             listNote.add(makeNote(noteToken));
-	             noteToken = new ArrayList<Token>();
-	             noteToken.add(token);
-	             count = 0;
-	         } else if ((i==1&&count==1)){
-	             listNote.add(makeNote(noteToken));
-	             noteToken = new ArrayList<Token>();
-	             noteToken.add(token);
-	             count = i;
-	         } else {
-	             count = i;
-	             noteToken.add(token);
-	         }
-	     }
-	     listNote.add(makeNote(noteToken));
-	     return listNote;
-	    }
-	
 	
 	private int typeHashCode(Token.Type type){
 		if (type.equals(Token.Type.ACCIDENTAL)){
