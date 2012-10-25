@@ -16,7 +16,6 @@ public class Parser {
 			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
 			ArrayList<Expression.Section> sections = e.getSections();
 			for (Expression.Section sect: sections){
-				//System.out.println(sect.getTokenSection().toString());
 				sectionToNotes(sect);
 			}
 		}
@@ -245,15 +244,23 @@ public class Parser {
     	int pletCount = 0;
 	    ArrayList<Expression> listNote = new ArrayList<Expression>();
 	    ArrayList<Token> noteToken = new ArrayList<Token>();
+	    ArrayList<Token> chordExpression = new ArrayList<Token>();
 	    for (Token token: tokenSection){
-	    	//System.out.println(triplet);
-	    	//System.out.println(token.getType().toString());
 	    	int i = typeHashCode(token.getType());
 		    if(i!=20){	
-		    	if (token.getType().equals(Token.Type.LEFTBRA)){
-		    		chord = true;
-		    	} else if (chord){
-		    		
+		        if (token.getType().equals(Token.Type.LEFTBRA)){
+	                 chord = true;
+	             } else if (chord){
+	                 if (token.getType().equals(Token.Type.RIGHTBRA)){
+	                     chord = false;
+	                     Expression.Chord c = new Expression.Chord();
+	                     ArrayList<Expression> list = makeChord(chordExpression);
+	                     c.setNote(list);
+	                     listNote.add(c);
+	                     chordExpression = new ArrayList<Token>();
+	                 } else {
+	                     chordExpression.add(token);
+	                 }
 		    	} else if (token.getType().equals(Token.Type.DUPLET)){
 		    		duplet = true;
 		    	} else if (duplet){
@@ -351,6 +358,33 @@ public class Parser {
     	}
 	    sect.setNotes(listNote);
 	}
+	
+	
+	private ArrayList<Expression> makeChord(ArrayList<Token> noteOfToken){
+	     ArrayList<Expression> listNote = new ArrayList<Expression>();
+	     ArrayList<Token> noteToken = new ArrayList<Token>();
+	     int count = 0;
+	     for (Token token: noteOfToken){
+	         int i = typeHashCode(token.getType());
+	         if (i < count){
+	             listNote.add(makeNote(noteToken));
+	             noteToken = new ArrayList<Token>();
+	             noteToken.add(token);
+	             count = 0;
+	         } else if ((i==1&&count==1)){
+	             listNote.add(makeNote(noteToken));
+	             noteToken = new ArrayList<Token>();
+	             noteToken.add(token);
+	             count = i;
+	         } else {
+	             count = i;
+	             noteToken.add(token);
+	         }
+	     }
+	     listNote.add(makeNote(noteToken));
+	     return listNote;
+	    }
+	
 	
 	private int typeHashCode(Token.Type type){
 		if (type.equals(Token.Type.ACCIDENTAL)){
