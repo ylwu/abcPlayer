@@ -201,7 +201,31 @@ public class Parser {
 	                     chordExpression = new ArrayList<Token>();
 	                 } else  chordExpression.add(token);
 		    	} else if (token.getType().equals(Token.Type.DUPLET)){
+		    		if (duplet){
+		    			if (pletCount == 1){
+		    				listNote.addAll(makeTriplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       		pletCount = 0;
+				       		count = 0;
+		    			}
+		    		} else if (triplet){
+		    			if (pletCount == 2){
+		    				listNote.addAll(makeTriplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       		pletCount = 0;
+				       		count = 0;
+		    			}
+		    		} else if (quadruplet){
+		    			if (pletCount == 3){
+		    				listNote.addAll(makeTriplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       		pletCount = 0;
+				       		count = 0;
+		    			}
+		    		}
 		    		duplet = true;
+		    		triplet = false;
+		    		quadruplet = false;
 		    	} else if (duplet){
 		    		if (token.getType().equals(Token.Type.DUPLET) && pletCount == 1){
 		    			listNote.addAll(makeDuplet(noteToken));
@@ -223,15 +247,31 @@ public class Parser {
 				       	count = i;
 				       	noteToken.add(token);}
 		    	} else if (token.getType().equals(Token.Type.TRIPLET)){
-		    		if (triplet){
+		    		if (duplet){
+		    			if (pletCount == 1){
+		    				listNote.addAll(makeTriplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       		pletCount = 0;
+				       		count = 0;
+		    			}
+		    		} else if (triplet){
 		    			if (pletCount == 2){
 		    				listNote.addAll(makeTriplet(noteToken));
 				       		noteToken = new ArrayList<Token>();
 				       		pletCount = 0;
 				       		count = 0;
 		    			}
+		    		} else if (quadruplet){
+		    			if (pletCount == 3){
+		    				listNote.addAll(makeTriplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       		pletCount = 0;
+				       		count = 0;
+		    			}
 		    		}
+		    		duplet = false;
 		    		triplet = true;
+		    		quadruplet = false;
 		    	} else if (triplet) {
 		    		if (i < count){
 						pletCount++;
@@ -253,6 +293,30 @@ public class Parser {
 				       	noteToken.add(token);
 					}
 		    	} else if (token.getType().equals(Token.Type.QUADRUPLET)||quadruplet){
+		    		if (duplet){
+		    			if (pletCount == 1){
+		    				listNote.addAll(makeTriplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       		pletCount = 0;
+				       		count = 0;
+		    			}
+		    		} else if (triplet){
+		    			if (pletCount == 2){
+		    				listNote.addAll(makeTriplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       		pletCount = 0;
+				       		count = 0;
+		    			}
+		    		} else if (quadruplet){
+		    			if (pletCount == 3){
+		    				listNote.addAll(makeTriplet(noteToken));
+				       		noteToken = new ArrayList<Token>();
+				       		pletCount = 0;
+				       		count = 0;
+		    			}
+		    		}
+		    		duplet = false;
+		    		triplet = false;
 		    		quadruplet = true;
 		    	} else if (quadruplet) {
 		    		if (token.getType().equals(Token.Type.QUADRUPLET) && pletCount == 3){
