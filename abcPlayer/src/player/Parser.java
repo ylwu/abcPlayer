@@ -338,7 +338,7 @@ public class Parser {
 			for (Token token: noteToken){
 				if (token.getType().equals(Token.Type.ACCIDENTAL)){
 					note.setAccidental(setTokenExpression(token));
-				} else if (token.getType().equals(Token.Type.NOTE)){
+				} else if (token.getType().equals(Token.Type.NOTE)||token.getType().equals(Token.Type.REST)){
 					note.setNote(setTokenExpression(token));
 				} else if (token.getType().equals(Token.Type.OCTAVE)){
 					note.setOctave(setTokenExpression(token));
