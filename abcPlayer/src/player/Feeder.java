@@ -86,7 +86,7 @@ public class Feeder {
 	 * @throws NumberFormatException 
 	 */
 	private void headerToFields() throws NumberFormatException, MidiUnavailableException, InvalidMidiDataException{
-	    Header header = this.parser.lexer.header;
+	    Header header = this.parser.header;
         if (header.L != null){
             this.defLen = lengthToNumber(header.L);
         }else throw new RuntimeException("Illegal header input");
