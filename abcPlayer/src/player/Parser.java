@@ -226,7 +226,7 @@ public class Parser {
 					count = 0;
 			       	if (pletCount >= 2){
 			       		duplet = false;
-			       		listNote.addAll(makePlet(noteToken));
+			       		listNote.addAll(makeDuplet(noteToken));
 			       		noteToken = new ArrayList<Token>();
 			       	} else {
 			       		noteToken.add(token);
@@ -243,7 +243,7 @@ public class Parser {
 					count = 0;
 			       	if (pletCount >= 3){
 			       		triplet = false;
-			       		listNote.addAll(makePlet(noteToken));
+			       		listNote.addAll(makeTriplet(noteToken));
 			       		noteToken = new ArrayList<Token>();
 			       	} else {
 			       		noteToken.add(token);
@@ -260,7 +260,7 @@ public class Parser {
 					count = 0;
 			       	if (pletCount >= 4){
 			       		quadruplet = false;
-			       		listNote.addAll(makePlet(noteToken));
+			       		listNote.addAll(makeQuadruplet(noteToken));
 			       		noteToken = new ArrayList<Token>();
 			       	} else {
 			       		noteToken.add(token);
@@ -280,7 +280,15 @@ public class Parser {
 			       	noteToken.add(token);
 				}
 	    	}
-	    	listNote.addAll(makePlet(noteToken));
+	    	if (duplet) {
+	    		listNote.addAll(makeDuplet(noteToken));
+	    	} else if (triplet) {
+	    		listNote.addAll(makeTriplet(noteToken));
+	    	} else if (quadruplet) {
+	    		listNote.addAll(makeQuadruplet(noteToken));
+	    	} else {
+	    	listNote.add(makeNote(noteToken));
+	    	}
 	    }
 	    sect.setNotes(listNote);
 	}
@@ -342,13 +350,87 @@ public class Parser {
 		}
 	}
 	
-	private ArrayList<Expression> makePlet(ArrayList<Token> noteToken){
+	private ArrayList<Expression> makeDuplet(ArrayList<Token> noteToken){
 		int count = 0;
 		ArrayList<Token> singleNoteToken = new ArrayList<Token>();
 		ArrayList<Expression> listSingleNote = new ArrayList<Expression>();
 		for (Token token: noteToken){
 			int i = typeHashCode(token.getType());
 			if (i < count){
+				int length = singleNoteToken.size();
+				Token lastToken = singleNoteToken.get(length-1);
+				if (lastToken.getType().equals(Token.Type.LENGTH)){
+					double newLength = lastToken.getValue()*0.5;
+					Token newLengthToken = new Token(newLength, Token.Type.LENGTH);
+					singleNoteToken.set(length-1, newLengthToken);
+				} else {
+					Token newLengthToken = new Token(0.5, Token.Type.LENGTH);
+					singleNoteToken.add(newLengthToken);
+				}
+				Expression singleNote = makeNote(singleNoteToken);
+				listSingleNote.add(singleNote);
+				singleNoteToken = new ArrayList<Token>();
+				singleNoteToken.add(token);
+		       	count = 0;
+			} else {
+		       	count = i;
+		       	singleNoteToken.add(token);
+			}
+		}
+		Expression singleNote = makeNote(singleNoteToken);
+		listSingleNote.add(singleNote);
+		return listSingleNote;
+	}
+	
+	private ArrayList<Expression> makeTriplet(ArrayList<Token> noteToken){
+		int count = 0;
+		ArrayList<Token> singleNoteToken = new ArrayList<Token>();
+		ArrayList<Expression> listSingleNote = new ArrayList<Expression>();
+		for (Token token: noteToken){
+			int i = typeHashCode(token.getType());
+			if (i < count){
+				int length = singleNoteToken.size();
+				Token lastToken = singleNoteToken.get(length-1);
+				if (lastToken.getType().equals(Token.Type.LENGTH)){
+					double newLength = lastToken.getValue()*(2.0/3);
+					Token newLengthToken = new Token(newLength, Token.Type.LENGTH);
+					singleNoteToken.set(length-1, newLengthToken);
+				} else {
+					Token newLengthToken = new Token(2.0/3, Token.Type.LENGTH);
+					singleNoteToken.add(newLengthToken);
+				}
+				Expression singleNote = makeNote(singleNoteToken);
+				listSingleNote.add(singleNote);
+				singleNoteToken = new ArrayList<Token>();
+				singleNoteToken.add(token);
+		       	count = 0;
+			} else {
+		       	count = i;
+		       	singleNoteToken.add(token);
+			}
+		}
+		Expression singleNote = makeNote(singleNoteToken);
+		listSingleNote.add(singleNote);
+		return listSingleNote;
+	}
+	
+	private ArrayList<Expression> makeQuadruplet(ArrayList<Token> noteToken){
+		int count = 0;
+		ArrayList<Token> singleNoteToken = new ArrayList<Token>();
+		ArrayList<Expression> listSingleNote = new ArrayList<Expression>();
+		for (Token token: noteToken){
+			int i = typeHashCode(token.getType());
+			if (i < count){
+				int length = singleNoteToken.size();
+				Token lastToken = singleNoteToken.get(length-1);
+				if (lastToken.getType().equals(Token.Type.LENGTH)){
+					double newLength = lastToken.getValue()*(0.75);
+					Token newLengthToken = new Token(newLength, Token.Type.LENGTH);
+					singleNoteToken.set(length-1, newLengthToken);
+				} else {
+					Token newLengthToken = new Token(0.75, Token.Type.LENGTH);
+					singleNoteToken.add(newLengthToken);
+				}
 				Expression singleNote = makeNote(singleNoteToken);
 				listSingleNote.add(singleNote);
 				singleNoteToken = new ArrayList<Token>();

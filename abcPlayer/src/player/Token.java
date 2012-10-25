@@ -48,6 +48,10 @@ public class Token {
         else return Double.toString(val);
     }
     
+    public double getValue(){
+    	return val;
+    }
+    
     public Type getType(){
         return type;
     }

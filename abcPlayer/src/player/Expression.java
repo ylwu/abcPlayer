@@ -370,7 +370,7 @@ public interface Expression {
 	public class Length implements Expression {
 		
 		private Token thisToken;
-		private final String value;
+		private String value;
 		
 		public Length(Token token){
 			this.thisToken = token;
