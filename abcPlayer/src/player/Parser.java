@@ -2,6 +2,7 @@ package player;
 
 import java.util.*;
 
+import player.Expression.Section;
 import player.Token;
 
 public class Parser {
@@ -82,6 +83,34 @@ public class Parser {
 		}
 		return listOfExpression;
 	}
+	
+	private ArrayList<Expression.Section> basicRepeatedSection(List<Expression.Section> list) {
+	    ArrayList<Integer> rStart = new ArrayList<Integer>();
+	    ArrayList<Integer> rEnd = new ArrayList<Integer>();
+	    ArrayList<Integer> rAlt = new ArrayList<Integer>();
+	    ArrayList<Expression.Section> outList = new ArrayList<Expression.Section>();
+	    for (int i=0; i<list.size(); i++){
+            ArrayList<Token> tokenSection = list.get(i).getTokenSection();
+            if (tokenSection.get(0).getType().equals(Token.Type.COLON)){
+                rStart.add(i);
+            }else if (tokenSection.get(tokenSection.size()-1).getType().equals(Token.Type.COLON)){
+                rEnd.add(i);
+            }else if (tokenSection.get(0).getType().equals(Token.Type.ALTONE)){
+                rAlt.add(i);
+            }else return (ArrayList<Section>) list;
+	    }
+	    if ((rStart.size()>rEnd.size())||(rEnd.size()-rStart.size()>=2)){
+	        throw new RuntimeException("Invalid layout of colons");
+	    }
+	    if (rStart.get(0)>rEnd.get(0)){
+	        ArrayList<Integer> rTemp = new ArrayList<Integer>(Arrays.asList(0));
+	        rStart.addAll(0, rTemp);
+	    }
+	    for (int i=0; i<rStart.size(); i++){
+	        
+	    }
+	    
+	    }
 	
 	private ArrayList<Expression.Section> repeatedSection(List<Expression.Section> list) {
 	    boolean repeat = false;
