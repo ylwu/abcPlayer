@@ -114,7 +114,7 @@ public interface Expression {
         	        return 1;
         	    }else if (this.accidental.toString().equals("_")){
         	        return -1;
-        	    }else if (this.accidental.toString().equals("_")){
+        	    }else if (this.accidental.toString().equals("=")){
         	        return 2;
         	    }else throw new RuntimeException("Illegal accidental");
     	    }

@@ -123,70 +123,74 @@ public class Feeder {
 	    }else if (exp.getOctave() == -1){
 	        octave = -12;
 	    }
-	    switch (this.key){
-        case A:
-            if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")){
-                transpose += 1;
-            }
-            break;
-        case Ab:
-            if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")||(exp.getNote() == "D")){
-                transpose -= 1;
-            }
-            break;
-        case B:
-            if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")||(exp.getNote() == "D")||(exp.getNote() == "A")){
-                transpose += 1;
-            }
-            break;
-        case Bb:
-            if ((exp.getNote() == "B")||(exp.getNote() == "E")){
-                transpose -= 1;
-            }
-            break;
-        case C:
-            break;
-        case D:
-            if ((exp.getNote() == "F")||(exp.getNote() == "C")){
-                transpose += 1;
-            }
-            break;
-        case Db:
-            if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")||(exp.getNote() == "D")||(exp.getNote() == "G")){
-                transpose -= 1;
-            }
-            break;
-        case E:
-            if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")||(exp.getNote() == "D")){
-                transpose += 1;
-            }
-            break;
-        case Eb:
-            if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")){
-                transpose -= 1;
-            }
-            break;
-        case F:
-            if (exp.getNote() == "B"){
-                transpose -= 1;
-            }
-            break;
-        case Fs:
-            if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")||(exp.getNote() == "D")||(exp.getNote() == "A")||(exp.getNote() == "E")){
-                transpose += 1;
-            }
-            break;
-        case G:
-            if (exp.getNote() == "F"){
-                transpose += 1;
-            }
-            break;
-        case Gb:
-            if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")||(exp.getNote() == "D")||(exp.getNote() == "G")||(exp.getNote() == "C")){
-                transpose -= 1;
-            }
-            break;
-    }
+	    if (transpose==2){
+	        transpose=0;
+	    }else{
+    	    switch (this.key){
+            case A:
+                if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")){
+                    transpose += 1;
+                }
+                break;
+            case Ab:
+                if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")||(exp.getNote() == "D")){
+                    transpose -= 1;
+                }
+                break;
+            case B:
+                if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")||(exp.getNote() == "D")||(exp.getNote() == "A")){
+                    transpose += 1;
+                }
+                break;
+            case Bb:
+                if ((exp.getNote() == "B")||(exp.getNote() == "E")){
+                    transpose -= 1;
+                }
+                break;
+            case C:
+                break;
+            case D:
+                if ((exp.getNote() == "F")||(exp.getNote() == "C")){
+                    transpose += 1;
+                }
+                break;
+            case Db:
+                if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")||(exp.getNote() == "D")||(exp.getNote() == "G")){
+                    transpose -= 1;
+                }
+                break;
+            case E:
+                if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")||(exp.getNote() == "D")){
+                    transpose += 1;
+                }
+                break;
+            case Eb:
+                if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")){
+                    transpose -= 1;
+                }
+                break;
+            case F:
+                if (exp.getNote() == "B"){
+                    transpose -= 1;
+                }
+                break;
+            case Fs:
+                if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")||(exp.getNote() == "D")||(exp.getNote() == "A")||(exp.getNote() == "E")){
+                    transpose += 1;
+                }
+                break;
+            case G:
+                if (exp.getNote() == "F"){
+                    transpose += 1;
+                }
+                break;
+            case Gb:
+                if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")||(exp.getNote() == "D")||(exp.getNote() == "G")||(exp.getNote() == "C")){
+                    transpose -= 1;
+                }
+                break;
+    	    }
+	    }
 		Pitch pitch = new Pitch(note.charAt(0)).transpose(transpose).transpose(octave);
 		this.player.addNote(pitch.toMidiNote(),
 		        curTick[curVoice], 
