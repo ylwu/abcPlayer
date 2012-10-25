@@ -143,11 +143,8 @@ public interface Expression {
     
     public class Chord implements Expression {
     	
-    	private Expression accidental;
     	private ArrayList<Expression> notes;
-    	private Expression octave;
-    	private Expression length;
-    	
+ 	
     	public Chord(){
     	}
     	
@@ -160,40 +157,18 @@ public interface Expression {
     		for (Expression note: this.notes){
     			notes += note.toString();
     		}
-    		return accidental.toString()+"["+notes+"]"+octave.toString()+length.toString();
+    		return "Chord" +"["+notes+"]";
     	}
     	
-    	public void setAccidental(Expression accidental){
-    		this.accidental = accidental;
-    	}
     	
     	public void setNote(ArrayList<Expression> notes){
     		this.notes = notes;
-    	}
-    	
-    	public void setOctave(Expression octave){
-    		this.octave = octave;
-    	}
-    	
-    	public void setLength(Expression length){
-    		this.length = length;
-    	}
-    	
-    	public Expression getAccidental(){
-    		return this.accidental;
     	}
     	
     	public ArrayList<Expression> getNote(){
     		return this.notes;
     	}
     	
-    	public Expression getOctave(){
-    		return this.octave;
-    	}
-    	
-    	public Expression getLength(){
-    		return this.length;
-    	}
     }
 
 	public class Accidental implements Expression {
