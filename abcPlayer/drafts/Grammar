@@ -9,7 +9,6 @@ RIGHTBRA: ]
 DUPLET: (2
 TRIPLET: (3
 QUADRUPLET: (4
-LEFTPAR: (
 COLON: :
 Rest: z
 LENGTH: number that represent the length of the note, such as 2, 1/3.
@@ -21,18 +20,18 @@ SPACE: " "
 Non-terminals:
 
 Sheet = Voice*
-Voice = MajorSection*
-MajorSection = (Bar|Repeat)* LINE|RIGHTBRA
+Voice = Section*
+Section = Bar|Repeat
 Bar = Notes LINE
 Notes = (Single|Chord|Tuplet|Triplet|Quadruplet|Rest)*
-Single = ACCIDENTAL? NOTE OCTAVE* LENGTH?
-Chord = LEFTBRA Single+ RIGHTBRA
-Tuplet = LEFTPAR [2] Single{2}
-Triplet = LEFTPAR [3] Single{3}
-Quadruplet = LEFTPAR [4] Single{4}
+SingleNote = ACCIDENTAL? NOTE OCTAVE* LENGTH?
+Chord = LEFTBRA (ACCIDENTAL? NOTE OCTAVE*)+ RIGHTBRA LENGTH?
+Tuplet = DUPLET Single{2} //Notice Length*0.5
+Triplet = TRIPLET Single{3} //Notice Length*2.0/3
+Quadruplet = QUADRUPLET Single{4} //Notice Length*0.75
 Rest = [z] Length?
 Repeat = COLON? Bar+ Altend? Notes COLON LINE (Altend Notes LINE)?
-Altend = LEFTBRA [/d]
+Altend = [ALTONE|ALTTWO] [/d]
 
 
 To_decide: Do we want the LEFTPAR to be tokenized separted or with the number following it? eg."(3","(4"
