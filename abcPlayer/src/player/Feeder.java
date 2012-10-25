@@ -19,7 +19,7 @@ import sound.SequencePlayer;
  */
 public class Feeder {
 	private Parser parser;
-	private SequencePlayer player;
+	public SequencePlayer player;
 	private LegalKey key;
 	private double defLen;
 	private int[] curTick;
@@ -64,10 +64,9 @@ public class Feeder {
 		    }
 		    curVoice = (Integer) vMap.get(v.toString());
 		    for (Section s: v.getSections()){
-		        System.out.println("looping section");
 		        fill = 0;
 		        for (Expression e: s.getNotes()){
-		            System.out.println("looping notes");
+		            //System.out.println("looping notes");
 		            if (e.getType().equals("SingleNote")){
 		                feedNote((SingleNote)e);
 		                curTick[curVoice] += (int)Math.round((((SingleNote)e).getLength())*12);
