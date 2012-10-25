@@ -18,7 +18,7 @@ import sound.SequencePlayer;
  */
 public class Feeder {
 	private Parser parser;
-	public SequencePlayer player;
+	private SequencePlayer player;
 	private LegalKey key;
 	private double defLen;
 	private int[] curTick;
@@ -36,6 +36,14 @@ public class Feeder {
 	public Feeder(Parser parser) throws NumberFormatException, MidiUnavailableException, InvalidMidiDataException{
 		this.parser = parser;
         headerToFields();
+	}
+	
+	/**
+	 * Plays the data loaded in the player.
+	 * @throws MidiUnavailableException
+	 */
+	public void play() throws MidiUnavailableException{
+	    this.player.play();
 	}
 	
 	/**
@@ -185,11 +193,17 @@ public class Feeder {
 		        (int)Math.round(length/this.defLen*12));
 	}
 	
+	/**
+	 * Takes an Chord object, analyzes its parameters, and input them into the sequence
+     * player. 
+	 * @param exp The Chord object
+	 */
 	private void feedChord(Chord exp){
 	    for (Expression s: exp.getNote()){
 	        feedNote((SingleNote)s);
 	    }
 	}
+	
 	
 	/**
 	 * Takes a String representing a key signature of the music piece and tests if it could be in 
