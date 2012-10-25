@@ -75,10 +75,10 @@ public class Feeder {
 	
 	/**
 	 * Takes an Note object, analyzes its parameters, and input them into the sequence
-	 * player. Utilizes visitor pattern.
+	 * player. 
 	 * @param exp Note object.
 	 */
-	private void feedExpression(Note exp){
+	private void feedNote(SingleNote exp){
 	    double length = exp.length;
 	    int transpose = exp.transpose;
 	    String note;
@@ -212,7 +212,7 @@ public class Feeder {
 	        
 	    }
 	    public void onVoice(Voice voice){
-	        
+
 	    }
 	    public void onNote(Note note){
 	        
