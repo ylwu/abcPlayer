@@ -1,14 +1,16 @@
 package player;
 
 import java.util.*;
+
 import player.Token;
 
 public class Parser {
 
 	public Parser(Lexer lexer) {
 		this.tokenList = lexer.getTokenList();
-		this.parsedList= voiceMaker();
 		this.lexer = lexer;
+        this.header = lexer.getHeader();
+		this.parsedList = this.voiceMaker();		
 		for (Expression.Voice e: parsedList){
 			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
 			ArrayList<Expression.Section> sections = e.getSections();
@@ -18,15 +20,24 @@ public class Parser {
 		}
 	}
 	
-	private List<Token> tokenList;
-	private List<Expression.Voice> parsedList;
-	public Lexer lexer;
+	private ArrayList<Token> tokenList;
+	private ArrayList<Expression.Voice> parsedList;
+	private Lexer lexer;
+	private Header header;
 	
 	private ArrayList<Expression.Voice> voiceMaker(){
-		ArrayList<String> listOfVoice = new ArrayList<String>();
+		ArrayList<String> listOfVoice = header.V;
 		ArrayList<ArrayList<Token>> tokenInVoice = new ArrayList<ArrayList<Token>>();
 		String voiceOfTime = "";
 		ArrayList<Token> listOfTime = new ArrayList<Token>();
+		
+		if (listOfVoice.size() == 0){
+		    Expression.Voice v = new Expression.Voice("");
+		    v.setTokenInVoice(tokenList);
+		    ArrayList<Expression.Voice> setVoice = new ArrayList<Expression.Voice>();
+		    setVoice.add(v);
+		    return setVoice;
+		}
 		for (Token token: tokenList){
 			if (token.getType().equals(Token.Type.VOICE)){
 				String voiceName = token.toString();
@@ -66,7 +77,9 @@ public class Parser {
 			int fromIndex = lineIndex.get(j-1) + 1;
 			int toIndex = lineIndex.get(j);
 			ArrayList<Token> section = new ArrayList<Token>();
-			section = (ArrayList<Token>) tokenList.subList(fromIndex, toIndex);
+			for (int i=fromIndex; i<=toIndex; i++){
+			    section.add(tokenList.get(i));
+			}
 			listOfExpression.add(new Expression.Section(section));
 		}
 		return listOfExpression;

@@ -199,10 +199,11 @@ public interface Expression {
 	public class Accidental implements Expression {
 
 		private Token thisToken;
-		private final String value = this.thisToken.toString();
+		private final String value;
 		
 		public Accidental(Token token){
-			this.thisToken = token;
+			thisToken = token;
+			value = token.toString();
 		}
 		
 		public String getType(){
@@ -217,10 +218,11 @@ public interface Expression {
 	public class Note implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.toString();
+		private final String value;
 		
 		public Note(Token token){
 			this.thisToken = token;
+			value = token.toString();
 		}
 		
 		public String getType(){
@@ -235,10 +237,11 @@ public interface Expression {
 	public class Octave implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.toString();
+		private final String value;
 		
 		public Octave(Token token){
 			this.thisToken = token;
+			value = token.toString();
 		}
 		
 		public String getType(){
@@ -253,10 +256,11 @@ public interface Expression {
 	public class LeftBra implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.toString();
+		private final String value;
 		
 		public LeftBra(Token token){
 			this.thisToken = token;
+			value = token.toString();
 		}
 		
 		public String getType(){
@@ -271,10 +275,11 @@ public interface Expression {
 	public class RightBra implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.toString();
+		private final String value;
 		
 		public RightBra(Token token){
 			this.thisToken = token;
+			value = token.toString();
 		}
 		
 		public String getType(){
@@ -289,10 +294,11 @@ public interface Expression {
 	public class Duplet implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.toString();
+		private final String value;
 		
 		public Duplet(Token token){
 			this.thisToken = token;
+			value = token.toString();
 		}
 		
 		public String getType(){
@@ -307,10 +313,11 @@ public interface Expression {
 	public class Triplet implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.toString();
+		private final String value;
 		
 		public Triplet(Token token){
 			this.thisToken = token;
+			value = token.toString();
 		}
 		
 		public String getType(){
@@ -325,10 +332,11 @@ public interface Expression {
 	public class Quadruplet implements Expression {
 
 		private Token thisToken;
-		private final String value = this.thisToken.toString();
+		private final String value;
 		
 		public Quadruplet(Token token){
 			this.thisToken = token;
+			value = token.toString();
 		}
 		
 		public String getType(){
@@ -343,10 +351,11 @@ public interface Expression {
 	public class Rest implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.toString();
+		private final String value;
 		
 		public Rest(Token token){
 			this.thisToken = token;
+			value = token.toString();
 		}
 		
 		public String getType(){
@@ -361,10 +370,11 @@ public interface Expression {
 	public class Length implements Expression {
 		
 		private Token thisToken;
-		private final String value = this.thisToken.toString();
+		private final String value;
 		
 		public Length(Token token){
 			this.thisToken = token;
+			value = token.toString();
 		}
 		
 		public String getType(){
@@ -378,10 +388,11 @@ public interface Expression {
 	
 	public class Space implements Expression {
 		private Token thisToken;
-		private final String value = this.thisToken.toString();
+		private final String value;
 		
 		public Space(Token token){
 			this.thisToken = token;
+			value = token.toString();
 		}
 		
 		public String getType(){

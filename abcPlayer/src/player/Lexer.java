@@ -189,5 +189,9 @@ public class Lexer {
     public ArrayList<Token> getTokenList(){
         return tokenList;
     }
+    
+    public Header getHeader(){
+        return header;
+    }
 
 }
