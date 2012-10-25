@@ -14,4 +14,12 @@ public class ParserTest {
         Parser p = new Parser(l);
         System.out.println(p.toString());
     }
+    
+    @Test
+    public void basicTest2() throws IOException{
+        Lexer l = new Lexer();
+        l.tokenize("piece2.abc");
+        Parser p = new Parser(l);
+        System.out.println(p.toString());
+    }
 }
