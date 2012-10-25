@@ -10,7 +10,7 @@ public class Parser {
 		this.tokenList = lexer.getTokenList();
 		this.lexer = lexer;
         this.header = lexer.getHeader();
-		this.parsedList = this.voiceMaker();		
+		this.parsedList = voiceMaker();		
 		for (Expression.Voice e: parsedList){
 			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
 			ArrayList<Expression.Section> sections = e.getSections();
@@ -40,8 +40,9 @@ public class Parser {
 		}
 		for (Token token: tokenList){
 			if (token.getType().equals(Token.Type.VOICE)){
+			    
 				String voiceName = token.toString();
-				tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime); //voiceOfTime is never modified!
+				//tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime); //voiceOfTime is never modified!
 				if (listOfVoice.contains(voiceName)){ 
 					listOfTime = tokenInVoice.get(listOfVoice.indexOf(voiceName));
 				} else {
@@ -319,26 +320,15 @@ public class Parser {
 		}
 		if (chord) {
 			ArrayList<Expression> notes = new ArrayList<Expression>();
-			Expression.Chord note = new Expression.Chord();
-			for (Token token: noteToken){
-				if (token.getType().equals(Token.Type.ACCIDENTAL)){
-					note.setAccidental(setTokenExpression(token));
-				} else if (token.getType().equals(Token.Type.NOTE)){
-					notes.add(setTokenExpression(token));
-				} else if (token.getType().equals(Token.Type.OCTAVE)){
-					note.setOctave(setTokenExpression(token));
-				} else if (token.getType().equals(Token.Type.LENGTH)){
-					note.setLength(setTokenExpression(token));
-				} else {}
-			}
-			note.setNote(notes);
-			return note;
+			Expression.Chord c = new Expression.Chord();
+			c.setNote(notes);
+			return c;
 		} else {
 			Expression.SingleNote note = new Expression.SingleNote();
 			for (Token token: noteToken){
 				if (token.getType().equals(Token.Type.ACCIDENTAL)){
 					note.setAccidental(setTokenExpression(token));
-				} else if (token.getType().equals(Token.Type.NOTE)){
+				} else if (token.getType().equals(Token.Type.NOTE)||token.getType().equals(Token.Type.REST)){
 					note.setNote(setTokenExpression(token));
 				} else if (token.getType().equals(Token.Type.OCTAVE)){
 					note.setOctave(setTokenExpression(token));

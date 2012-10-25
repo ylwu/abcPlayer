@@ -29,7 +29,6 @@ Chord = LEFTBRA (ACCIDENTAL? NOTE OCTAVE*)+ RIGHTBRA LENGTH?
 Tuplet = DUPLET Single{2} //Notice Length*0.5
 Triplet = TRIPLET Single{3} //Notice Length*2.0/3
 Quadruplet = QUADRUPLET Single{4} //Notice Length*0.75
-Rest = [z] Length?
 Repeat = COLON? Bar+ Altend? Notes COLON LINE (Altend Notes LINE)?
 Altend = [ALTONE|ALTTWO] [/d]
 

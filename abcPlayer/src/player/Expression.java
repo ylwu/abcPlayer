@@ -22,7 +22,12 @@ public interface Expression {
 		}
 		
 		public String toString(){
-			return voiceName;
+		    StringBuffer s = new StringBuffer();
+		    for (Expression.Section sec : sections){
+		        s.append(sec.toString());
+		    }
+			return voiceName + s;
+			
 		}
 		
 		public void setTokenInVoice(ArrayList<Token> tokenInVoice){
@@ -56,7 +61,11 @@ public interface Expression {
         }
         
         public String toString(){
-            return "This is a Section";
+            StringBuffer s = new StringBuffer();
+            for (Expression e : notes){
+                s.append(e.toString());
+            }
+            return "Section(" + s + ") ";
         }
         
         public ArrayList<Token> getTokenSection(){
@@ -87,7 +96,16 @@ public interface Expression {
     	}
     	
     	public String toString(){
-    		return accidental.toString()+note.toString()+octave.toString()+length.toString();
+    	    String accStr = "";
+    	    String noteStr = "";
+    	    String octStr = "";
+    	    String lenStr = "";
+    	    
+    	    if (accidental!=null) accStr = accidental.toString();
+    	    if (note!= null) noteStr = note.toString();
+    	    if (octave!= null) octStr = octave.toString();
+    	    if (length!= null) lenStr = length.toString();
+    		return accStr + noteStr + octStr + lenStr +" ";
     	}
     	
     	public void setAccidental(Expression accidental){
@@ -143,11 +161,8 @@ public interface Expression {
     
     public class Chord implements Expression {
     	
-    	private Expression accidental;
     	private ArrayList<Expression> notes;
-    	private Expression octave;
-    	private Expression length;
-    	
+ 	
     	public Chord(){
     	}
     	
@@ -160,40 +175,18 @@ public interface Expression {
     		for (Expression note: this.notes){
     			notes += note.toString();
     		}
-    		return accidental.toString()+"["+notes+"]"+octave.toString()+length.toString();
+    		return "Chord" +"["+notes+"]";
     	}
     	
-    	public void setAccidental(Expression accidental){
-    		this.accidental = accidental;
-    	}
     	
     	public void setNote(ArrayList<Expression> notes){
     		this.notes = notes;
-    	}
-    	
-    	public void setOctave(Expression octave){
-    		this.octave = octave;
-    	}
-    	
-    	public void setLength(Expression length){
-    		this.length = length;
-    	}
-    	
-    	public Expression getAccidental(){
-    		return this.accidental;
     	}
     	
     	public ArrayList<Expression> getNote(){
     		return this.notes;
     	}
     	
-    	public Expression getOctave(){
-    		return this.octave;
-    	}
-    	
-    	public Expression getLength(){
-    		return this.length;
-    	}
     }
 
 	public class Accidental implements Expression {
