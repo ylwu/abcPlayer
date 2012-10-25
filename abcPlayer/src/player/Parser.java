@@ -23,7 +23,7 @@ public class Parser {
 	private ArrayList<Token> tokenList;
 	private ArrayList<Expression.Voice> parsedList;
 	private Lexer lexer;
-	private Header header;
+	public Header header;
 	
 	private ArrayList<Expression.Voice> voiceMaker(){
 		ArrayList<String> listOfVoice = header.V;

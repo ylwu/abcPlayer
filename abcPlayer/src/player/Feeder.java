@@ -263,20 +263,5 @@ public class Feeder {
         return N / D;
     }
 	
-	private class MusicVisitor implements Visitor{
-	    public MusicVisitor(){
-	        
-	    }
-	    public void onVoice(Voice voice){
-
-	    }
-	    public void onNote(Note note){
-	        
-	    }
-	    public void onChord(Chord chord){
-	        
-	    }
-	}
-	
 
 }
