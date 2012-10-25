@@ -105,7 +105,7 @@ public interface Expression {
     	    if (note!= null) noteStr = note.toString();
     	    if (octave!= null) octStr = octave.toString();
     	    if (length!= null) lenStr = length.toString();
-    		return accStr + noteStr + octStr + lenStr +" ";
+    		return "Single" + accStr + noteStr + octStr + lenStr +" ";
     	}
     	
     	public void setAccidental(Expression accidental){
