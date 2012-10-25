@@ -2,6 +2,7 @@ package player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -54,7 +55,8 @@ public class Feeder {
 	public void addAll(){
 	    int vCount = -1;
 	    double fill = 0;
-	    this.curTick = new int[this.parser.getParsedList().size()];
+	    this.curTick = new int[this.parser.header.V.size()];
+	    HashMap vMap = new HashMap();
 		for (Voice v: this.parser.getParsedList()){
 		    vCount++;
 		    curVoice = vCount;
