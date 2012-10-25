@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiUnavailableException;
+
 import player.Expression.*;
 
 import sound.Pitch;
@@ -26,10 +29,13 @@ public class Feeder {
 	/**
 	 * Constructs a Feeder object from a Parser.
 	 * @param parser
+	 * @throws InvalidMidiDataException 
+	 * @throws MidiUnavailableException 
+	 * @throws NumberFormatException 
 	 */
-	public Feeder(Parser parser){
+	public Feeder(Parser parser) throws NumberFormatException, MidiUnavailableException, InvalidMidiDataException{
 		this.parser = parser;
-		headerToFields();
+        headerToFields();
 	}
 	
 	/**
@@ -37,14 +43,33 @@ public class Feeder {
 	 * Takes the Expression object from this.parser and recursively calls itself on each node.
 	 */
 	public void addAll(){
-		
+	    int vCount = -1;
+	    this.curTick = new int[this.parser.getParsedList().size()];
+		for (Voice v: this.parser.getParsedList()){
+		    vCount++;
+		    curVoice = vCount;
+		    for (Section s: v.getSections()){
+		        for (Expression e: s.getNotes()){
+		            if (e.getType().equals("SingleNote")){
+		                feedNote((SingleNote)e);
+		                curTick[curVoice] += (int)Math.round((((SingleNote)e).getLength())/this.defLen*12);
+		            }else if(e.getType().equals("Chord")){
+		                feedChord((Chord)e);
+		                curTick[curVoice] += (int)Math.round((((SingleNote)(((Chord)e).getNote().get(0))).getLength())/this.defLen*12);
+		            }
+		        }
+		    }
+		}
 	}
 	
 	/**
 	 * Takes the field header from the lexer and creates a SequencePlayer by using
 	 * parameters specified by the head.
+	 * @throws InvalidMidiDataException 
+	 * @throws MidiUnavailableException 
+	 * @throws NumberFormatException 
 	 */
-	private void headerToFields(){
+	private void headerToFields() throws NumberFormatException, MidiUnavailableException, InvalidMidiDataException{
 	    Header header = this.parser.lexer.header;
         if (header.L != null){
             this.defLen = lengthToNumber(header.L);
@@ -79,81 +104,81 @@ public class Feeder {
 	 * @param exp Note object.
 	 */
 	private void feedNote(SingleNote exp){
-	    double length = exp.length;
-	    int transpose = exp.transpose;
+	    double length = exp.getLength();
+	    int transpose = exp.getAccidental();
 	    String note;
 	    int octave=0;
 	    
-	    note = exp.note;
-	    if (exp.octave == 1){
+	    note = exp.getNote().toString();
+	    if (exp.getOctave() == 1){
 	        octave = 12;
-	    }else if (exp.octave == -1){
+	    }else if (exp.getOctave() == -1){
 	        octave = -12;
 	    }
-		switch (this.key){
-		    case A:
-		        if ((exp.note == "F")||(exp.note == "C")||(exp.note == "G")){
-		            transpose += 1;
-		        }
-		        break;
-	        case Ab:
-	            if ((exp.note == "B")||(exp.note == "E")||(exp.note == "A")||(exp.note == "D")){
-	                transpose -= 1;
-	            }
-                break;
-		    case B:
-		        if ((exp.note == "F")||(exp.note == "C")||(exp.note == "G")||(exp.note == "D")||(exp.note == "A")){
-                    transpose += 1;
-		        }
-                break;
-		    case Bb:
-		        if ((exp.note == "B")||(exp.note == "E")){
-                    transpose -= 1;
-                }
-		        break;
-		    case C:
-                break;
-		    case D:
-		        if ((exp.note == "F")||(exp.note == "C")){
-                    transpose += 1;
-                }
-                break;
-		    case Db:
-		        if ((exp.note == "B")||(exp.note == "E")||(exp.note == "A")||(exp.note == "D")||(exp.note == "G")){
-                    transpose -= 1;
-                }
-		        break;
-		    case E:
-		        if ((exp.note == "F")||(exp.note == "C")||(exp.note == "G")||(exp.note == "D")){
-                    transpose += 1;
-                }
-                break;
-		    case Eb:
-		        if ((exp.note == "B")||(exp.note == "E")||(exp.note == "A")){
-                    transpose -= 1;
-                }
-		        break;
-		    case F:
-		        if (exp.note == "B"){
-		            transpose -= 1;
-		        }
-                break;
-		    case Fs:
-		        if ((exp.note == "F")||(exp.note == "C")||(exp.note == "G")||(exp.note == "D")||(exp.note == "A")||(exp.note == "E")){
-                    transpose += 1;
-                }
-		        break;
-		    case G:
-		        if (exp.note == "F"){
-		            transpose += 1;
-		        }
-                break;
-		    case Gb:
-		        if ((exp.note == "B")||(exp.note == "E")||(exp.note == "A")||(exp.note == "D")||(exp.note == "G")||(exp.note == "C")){
-                    transpose -= 1;
-                }
-		        break;
-		}
+	    switch (this.key){
+        case A:
+            if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")){
+                transpose += 1;
+            }
+            break;
+        case Ab:
+            if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")||(exp.getNote() == "D")){
+                transpose -= 1;
+            }
+            break;
+        case B:
+            if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")||(exp.getNote() == "D")||(exp.getNote() == "A")){
+                transpose += 1;
+            }
+            break;
+        case Bb:
+            if ((exp.getNote() == "B")||(exp.getNote() == "E")){
+                transpose -= 1;
+            }
+            break;
+        case C:
+            break;
+        case D:
+            if ((exp.getNote() == "F")||(exp.getNote() == "C")){
+                transpose += 1;
+            }
+            break;
+        case Db:
+            if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")||(exp.getNote() == "D")||(exp.getNote() == "G")){
+                transpose -= 1;
+            }
+            break;
+        case E:
+            if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")||(exp.getNote() == "D")){
+                transpose += 1;
+            }
+            break;
+        case Eb:
+            if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")){
+                transpose -= 1;
+            }
+            break;
+        case F:
+            if (exp.getNote() == "B"){
+                transpose -= 1;
+            }
+            break;
+        case Fs:
+            if ((exp.getNote() == "F")||(exp.getNote() == "C")||(exp.getNote() == "G")||(exp.getNote() == "D")||(exp.getNote() == "A")||(exp.getNote() == "E")){
+                transpose += 1;
+            }
+            break;
+        case G:
+            if (exp.getNote() == "F"){
+                transpose += 1;
+            }
+            break;
+        case Gb:
+            if ((exp.getNote() == "B")||(exp.getNote() == "E")||(exp.getNote() == "A")||(exp.getNote() == "D")||(exp.getNote() == "G")||(exp.getNote() == "C")){
+                transpose -= 1;
+            }
+            break;
+    }
 		Pitch pitch = new Pitch(note.charAt(0)).transpose(transpose).transpose(octave);
 		this.player.addNote(pitch.toMidiNote(),
 		        curTick[curVoice], 
@@ -161,7 +186,9 @@ public class Feeder {
 	}
 	
 	private void feedChord(Chord exp){
-	    
+	    for (Expression s: exp.getNote()){
+	        feedNote((SingleNote)s);
+	    }
 	}
 	
 	/**

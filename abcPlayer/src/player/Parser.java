@@ -8,6 +8,7 @@ public class Parser {
 	public Parser(Lexer lexer) {
 		this.tokenList = lexer.getTokenList();
 		this.parsedList= voiceMaker();
+		this.lexer = lexer;
 		for (Expression.Voice e: parsedList){
 			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
 			ArrayList<Expression.Section> sections = e.getSections();
@@ -19,6 +20,7 @@ public class Parser {
 	
 	private List<Token> tokenList;
 	private List<Expression.Voice> parsedList;
+	public Lexer lexer;
 	
 	private ArrayList<Expression.Voice> voiceMaker(){
 		ArrayList<String> listOfVoice = new ArrayList<String>();
@@ -28,13 +30,13 @@ public class Parser {
 		for (Token token: tokenList){
 			if (token.getType().equals(Token.Type.VOICE)){
 				String voiceName = token.toString();
-				tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime);
-				if (listOfVoice.contains(voiceName)){
+				tokenInVoice.set(listOfVoice.indexOf(voiceOfTime), listOfTime); //voiceOfTime is never modified!
+				if (listOfVoice.contains(voiceName)){ 
 					listOfTime = tokenInVoice.get(listOfVoice.indexOf(voiceName));
 				} else {
 					listOfVoice.add(voiceName);
 					listOfTime = new ArrayList<Token>();
-					tokenInVoice.add(listOfTime);
+					tokenInVoice.add(listOfTime); //So, content in voice 1 will be added to voice 2
 				}
 			} else {
 				listOfTime.add(token);

@@ -66,6 +66,10 @@ public interface Expression {
         public void setNotes(ArrayList<Expression> listNotes){
         	this.notes = listNotes;
         }
+        
+        public ArrayList<Expression> getNotes(){
+            return this.notes;
+        }
     }
     
     public class SingleNote implements Expression {
@@ -102,20 +106,38 @@ public interface Expression {
     		this.length = length;
     	}
     	
-    	public Expression getAccidental(){
-    		return this.accidental;
+    	public int getAccidental(){
+    	    if (this.accidental == null){
+    	        return 0;
+    	    }else{
+        	    if (this.accidental.toString().equals("^")){
+        	        return 1;
+        	    }else if (this.accidental.toString().equals("_")){
+        	        return -1;
+        	    }else if (this.accidental.toString().equals("_")){
+        	        return 2;
+        	    }else throw new RuntimeException("Illegal accidental");
+    	    }
     	}
     	
-    	public Expression getNote(){
-    		return this.note;
+    	public String getNote(){
+    		return this.note.toString();
     	}
     	
-    	public Expression getOctave(){
-    		return this.octave;
+    	public int getOctave(){
+    	    if (this.octave == null){
+                return 0;
+            }else{
+                if (this.octave.toString().equals("'")){
+                    return 1;
+                }else if (this.accidental.toString().equals(".")){
+                    return -1;
+                }else throw new RuntimeException("Illegal accidental");
+            }
     	}
     	
-    	public Expression getLength(){
-    		return this.length;
+    	public float getLength(){
+    		return Float.parseFloat(this.length.toString());
     	}
     }
     

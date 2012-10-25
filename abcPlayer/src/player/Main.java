@@ -15,6 +15,11 @@ public class Main {
 	 * @param file the name of input abc file
 	 */
 	public static void play(String file) {
-		// YOUR CODE HERE
+		try{
+		    Feeder feeder = new Feeder(new Parser(new Lexer()));
+		}
+		catch(NumberFormatException e){
+		    throw new RuntimeException("NumberFormatException")
+		}
 	}
 }
