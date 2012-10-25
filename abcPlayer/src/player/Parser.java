@@ -67,7 +67,8 @@ public class Parser {
 	private ArrayList<Expression.Section> sectionMaker(ArrayList<Token> tokenList){
 		int length = tokenList.size();
 		ArrayList<Integer> lineIndex = new ArrayList<Integer>();
-		for (int i=0; i<length; i++){
+		lineIndex.add(0);
+		for (int i=1; i<length; i++){
 			if (tokenList.get(i).getType().equals(Token.Type.LINE)){
 				lineIndex.add(i);
 			}
