@@ -316,7 +316,7 @@ public class Parser {
 				       	noteToken.add(token);
 					}
 		    	} else {
-					if (i <= count){
+					if (i < count){
 				       	listNote.add(makeNote(noteToken));
 				       	noteToken = new ArrayList<Token>();
 				       	noteToken.add(token);
