@@ -16,7 +16,6 @@ public class Parser {
 			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
 			ArrayList<Expression.Section> sections = e.getSections();
 			for (Expression.Section sect: sections){
-				//System.out.println(sect.getTokenSection().toString());
 				sectionToNotes(sect);
 			}
 		}
@@ -94,17 +93,13 @@ public class Parser {
         int lastEnd=-1;
         for (int i=0; i<list.size(); i++){
             ArrayList<Token> tokenSection = list.get(i).getTokenSection();
-            System.out.println("Enter loop "+ Integer.toString(i));
             if (tokenSection.get(1).getType().equals(Token.Type.COLON)){
                 rStart.add(i);
-                System.out.println("+rStart "+tokenSection.get(1).getType());
             }else if (tokenSection.get(1).getType().equals(Token.Type.ALTONE)){
                 rAlt.add(i);
-                System.out.println("+rAlt");
             }
             if (tokenSection.get(tokenSection.size()-2).getType().equals(Token.Type.COLON)){
                 rEnd.add(i);
-                System.out.println("+rEnd " +tokenSection.get(tokenSection.size()-2).getType());
             }
         }
         if (rEnd.size()==0){
@@ -151,30 +146,8 @@ public class Parser {
         outList.addAll(list.subList(lastEnd, list.size()));
         return outList;
         }
-	
-	private boolean beginRepeat(Expression.Section e){
-	    if (e.getTokenSection().get(0).getType().equals(Token.Type.COLON)) return true;
-	    return false;
-	}
-	
-	private boolean endRepeat(Expression.Section e){
-	    int indexLastToken = e.getTokenSection().size() - 1;
-	    if (e.getTokenSection().get(indexLastToken).getType().equals(Token.Type.COLON)) return true;
-	    return false;
-	}
-	
-	private boolean altOne(Expression.Section e){
-	    if (e.getTokenSection().get(0).getType().equals(Token.Type.ALTONE)) return true;
-	    return false;
-	}
-	
-	private boolean altTwo(Expression.Section e){
-	    if (e.getTokenSection().get(0).getType().equals(Token.Type.ALTTWO)) return true;
-	    return false;
-	}
-	
+
 	private void sectionToNotes (Expression.Section sect){
-		System.out.println(sect.getTokenSection().toString());
 	    ArrayList<Token> tokenSection = sect.getTokenSection();
 	    int count = 0;
     	boolean duplet = false;
@@ -186,7 +159,6 @@ public class Parser {
 	    ArrayList<Token> noteToken = new ArrayList<Token>();
 	    ArrayList<Token> chordExpression = new ArrayList<Token>();
 	    for (Token token: tokenSection){
-	    	System.out.println(triplet);
 	    	int i = typeHashCode(token.getType());
 		    if(i!=20){	
 		        if (token.getType().equals(Token.Type.LEFTBRA)){
@@ -349,19 +321,16 @@ public class Parser {
 				       	noteToken = new ArrayList<Token>();
 				       	noteToken.add(token);
 				       	count = i;
-//					} else if ((i==1&&count==1)){
-//						pletCount++;
-//						noteToken.add(token);
-//				       	count = i;
+				       	} else if ((i==1&&count==1)){
+						pletCount++;
+						noteToken.add(token);
+				       	count = i;
 					} else {
 				       	count = i;
 				       	noteToken.add(token);
 					}
-		    	}
-		        
+		    	}		        
 	    	}
-		    System.out.println(listNote.toString());
-		    System.out.println(noteToken.toString());
 	    }
     	if (duplet) {
     		listNote.addAll(makeDuplet(noteToken));
