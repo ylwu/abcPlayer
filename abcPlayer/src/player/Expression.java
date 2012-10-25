@@ -21,12 +21,13 @@ public interface Expression {
 			return "Voice";
 		}
 		
+		@Override
 		public String toString(){
 		    StringBuffer s = new StringBuffer();
 		    for (Expression.Section sec : sections){
 		        s.append(sec.toString());
 		    }
-			return voiceName + s;
+			return "Voice:"  + voiceName +"---"+ s;
 			
 		}
 		
@@ -65,7 +66,7 @@ public interface Expression {
             for (Expression e : notes){
                 s.append(e.toString());
             }
-            return "Section(" + s + ") ";
+            return "Section( " + s + ") ";
         }
         
         public ArrayList<Token> getTokenSection(){

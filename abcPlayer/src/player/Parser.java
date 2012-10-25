@@ -15,7 +15,7 @@ public class Parser {
 			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
 			ArrayList<Expression.Section> sections = e.getSections();
 			for (Expression.Section sect: sections){
-				System.out.println(sect.getTokenSection().toString());
+				//System.out.println(sect.getTokenSection().toString());
 				sectionToNotes(sect);
 			}
 		}
@@ -40,7 +40,7 @@ public class Parser {
 			for (Token token: tokenList){
 				if (token.getType().equals(Token.Type.VOICE)){	    
 					String voiceName = token.toString();
-					if (!listOfVoice.equals("")){
+					if (!(listOfVoice.size()==0)){
 						tokenInVoice.add(listOfTime);
 						listOfTime = new ArrayList<Token>();
 					} 
@@ -56,6 +56,7 @@ public class Parser {
 		for (int i=0; i<length; i++){
 			Expression.Voice v = new Expression.Voice(listOfVoice.get(i));
 			v.setTokenInVoice(tokenInVoice.get(i));
+			setVoice.add(v);
 		}
 		return setVoice;
 	}
@@ -216,8 +217,8 @@ public class Parser {
 	    ArrayList<Expression> listNote = new ArrayList<Expression>();
 	    ArrayList<Token> noteToken = new ArrayList<Token>();
 	    for (Token token: tokenSection){
-	    	System.out.println(triplet);
-	    	System.out.println(token.getType().toString());
+	    	//System.out.println(triplet);
+	    	//System.out.println(token.getType().toString());
 	    	int i = typeHashCode(token.getType());
 		    if(i!=20){	
 		    	if (token.getType().equals(Token.Type.LEFTBRA)){
