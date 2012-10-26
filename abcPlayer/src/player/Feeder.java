@@ -156,7 +156,7 @@ public class Feeder {
 	        return;
 	    }
 	    octave = exp.getOctave()*12;
-	    if (transpose==2){
+	    if (transpose>=100){
 	        transpose=0;
 	    }else{
     	    switch (this.key){
