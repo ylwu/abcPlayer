@@ -182,11 +182,15 @@ public interface Expression {
     	    if (this.octave == null){
                 return 0;
             }else{
-                if (this.octave.toString().equals("'")){
-                    return 1;
-                }else if (this.accidental.toString().equals(".")){
-                    return -1;
-                }else throw new RuntimeException("Illegal accidental");
+                int retOct = 0;
+                for (int i=0; i<this.octave.toString().length(); i++){
+                    if (this.octave.toString().substring(i, i+1).equals("'")){
+                        retOct++;
+                    }else if (this.octave.toString().substring(i, i+1).equals(",")){
+                        retOct--;
+                    }else throw new RuntimeException("Illegal accidental");
+                }
+                return retOct;
             }
     	}
     	
