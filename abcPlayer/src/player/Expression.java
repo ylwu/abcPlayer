@@ -152,13 +152,13 @@ public interface Expression {
     	    }
     	    
     	    if (numOctave == 1){
-                accStr = "'";
+                octStr = "'";
             } else if (numOctave == 2){
-                accStr = "''";
+                octStr = "''";
             } else if (numOctave == -1){
-                accStr = ",";
+                octStr = ",";
             } else if (numOctave == -2){
-                accStr = ",,";
+                octStr = ",,";
             }
     	    
     	    if (note!= null) noteStr = note.toString();

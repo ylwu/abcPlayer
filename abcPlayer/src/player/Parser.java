@@ -11,7 +11,7 @@ public class Parser {
 		this.tokenList = lexer.getTokenList();
 		this.lexer = lexer;
         this.header = lexer.getHeader();
-		this.parsedList = voiceMatcher(voiceMaker());		
+		this.parsedList = voiceMaker();		
 		for (Expression.Voice e: parsedList){
 			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
 			ArrayList<Expression.Section> sections = e.getSections();
@@ -453,6 +453,7 @@ public class Parser {
 	}
 	
 	private Expression makeNote(ArrayList<Token> noteToken){
+	    int numOfLen = 0;
 		Expression.SingleNote note = new Expression.SingleNote();
 		for (Token token: noteToken){
 			if (token.getType().equals(Token.Type.ACCIDENTAL)){
