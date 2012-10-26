@@ -69,9 +69,7 @@ public class Feeder {
 		            
 		            if (e.getType().equals("SingleNote")){
 		                feedNote((SingleNote)e);
-		                System.out.println(e.toString());
 		                curTick[curVoice] += (int)Math.round((((SingleNote)e).getLength())*12);
-		                System.out.println((int)Math.round((((SingleNote)e).getLength())*12));
 		                fill += ((SingleNote)e).getLength();
 		            }else if(e.getType().equals("Chord")){
 		                feedChord((Chord)e);
@@ -105,7 +103,6 @@ public class Feeder {
 	    Header header = this.parser.header;
         if (header.L != null){
             this.defLen = lengthToNumber(header.L);
-            System.out.println(this.defLen);
         }else throw new RuntimeException("Illegal header input");
 		if (header.Q != null){
 		    this.player = new SequencePlayer(Integer.parseInt(header.Q)*(int)Math.round(this.defLen/0.25), 12);
@@ -149,7 +146,6 @@ public class Feeder {
 	    String note = exp.getNote();
 	    int octave=0;
 	    
-	    System.out.println("EXPNote: "+note);
 	    
 	    if(note.equals("z")){
 	        curTick[curVoice]+=(int)Math.round(length*this.defLen*12);

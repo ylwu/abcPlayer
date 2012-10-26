@@ -33,7 +33,7 @@ public class ParserTest {
         Parser p = new Parser(l);
         System.out.println(p.toString());
     }      
-        //@Test
+        @Test
         public void basicTestChords() throws IOException{
             Lexer l = new Lexer();
             l.tokenize("lexer_legal_chords.abc");
@@ -42,7 +42,7 @@ public class ParserTest {
             assertEquals(expected,p.toString());
         }
         
-        //@Test
+        @Test
         public void basicTestSingles() throws IOException{
             Lexer l = new Lexer();
             l.tokenize("lexer_legal_single.abc");
@@ -53,7 +53,7 @@ public class ParserTest {
             assertEquals(expected,p.toString());
         }
         
-        //@Test
+        @Test
         public void basicTestVoices() throws IOException{
             Lexer l = new Lexer();
             l.tokenize("lexer_legal_voices.abc");
@@ -78,18 +78,16 @@ public class ParserTest {
         public void multipleOctaveTest() throws IOException{
             Lexer l = new Lexer();
             l.tokenize("doubleOctave");
-            System.out.println(l.toString());
             Parser p = new Parser(l);
-            System.out.println(p.toString());
+            String expected = "Voice:---Section( Single{G,,1.0} Single{G''1.0} Single{z0.5} Single{z0.5} ) Section( Single{__a,,1.0} Single{^^g''0.25} )  ";
+            assertEquals(expected,p.toString());
         }
         
-        @Test
+        @Test(expected = RuntimeException.class)
         public void multipleLength() throws IOException{
             Lexer l = new Lexer();
             l.tokenize("parser_illegal_multipleLength");
-            System.out.println(l.toString());
             Parser p = new Parser(l);
-            System.out.println(p.toString());
         }
         
     }

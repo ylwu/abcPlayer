@@ -24,6 +24,7 @@ public class Main {
 	        Lexer lexer = new Lexer();
 	        lexer.tokenize(file);
             Feeder feeder = new Feeder(new Parser(lexer));
+            feeder.addAll();
             feeder.play();
 	    } catch (NumberFormatException e){
 	        System.out.println("Error playing file!");

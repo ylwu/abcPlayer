@@ -128,7 +128,6 @@ public class Parser {
 			for (int i=fromIndex; i<=toIndex; i++){
 			    section.add(tokenList.get(i));
 			}
-			System.out.println(section.toString());
 			listOfExpression.add(new Expression.Section(section));
 		}
 		return listOfExpression;
