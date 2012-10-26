@@ -371,12 +371,16 @@ public class Parser {
 				       	noteToken.add(token);
 					}
 		    	} else {
-					if (i <= count){
+					if (i < count){
 				       	listNote.add(makeNote(noteToken));
 				       	noteToken = new ArrayList<Token>();
 				       	noteToken.add(token);
 				       	count = i;
-				       	
+				       	} else if ((i==1 && count==1)){
+	                        listNote.add(makeNote(noteToken));
+	                        noteToken = new ArrayList<Token>();
+	                        noteToken.add(token);
+	                        count = i;
 				       	} else {
 				       	count = i;
 				       	noteToken.add(token);
@@ -452,11 +456,21 @@ public class Parser {
 		Expression.SingleNote note = new Expression.SingleNote();
 		for (Token token: noteToken){
 			if (token.getType().equals(Token.Type.ACCIDENTAL)){
-				note.setAccidental(setTokenExpression(token));
+			    if (token.toString().equals("^")){
+			        note.addAccidental(1);
+			    } else if (token.toString().equals("_")){
+			        note.addAccidental(-1);
+			    } else {
+			        note.addAccidental(200);
+			    }
 			} else if (token.getType().equals(Token.Type.NOTE)||token.getType().equals(Token.Type.REST)){
 				note.setNote(setTokenExpression(token));
 			} else if (token.getType().equals(Token.Type.OCTAVE)){
-				note.setOctave(setTokenExpression(token));
+				if (token.toString().equals("'")){
+				    note.addOctave(1);
+				} else {
+				    note.addOctave(-1);
+				}
 			} else if (token.getType().equals(Token.Type.LENGTH)){
 				note.setLength(setTokenExpression(token));
 			} else {}

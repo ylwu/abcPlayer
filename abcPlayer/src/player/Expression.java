@@ -121,10 +121,10 @@ public interface Expression {
     
     public class SingleNote implements Expression {
     	
-    	private Expression accidental;
     	private Expression note;
-    	private Expression octave;
     	private Expression length;
+    	private int numAccidental;
+    	private int numOctave;
     	
     	public SingleNote(){
     	    Token t = new Token(1.0,Token.Type.LENGTH);
@@ -141,23 +141,26 @@ public interface Expression {
     	    String octStr = "";
     	    String lenStr = "";
     	    
-    	    if (accidental!=null) accStr = accidental.toString();
+    	    if (numAccidental == 1){
+    	        accStr = "'"
+    	    }
     	    if (note!= null) noteStr = note.toString();
     	    if (octave!= null) octStr = octave.toString();
     	    if (length!= null) lenStr = length.toString();
+    	    
     		return "Single{" + accStr + noteStr + octStr + lenStr +"} ";
     	}
     	
-    	public void setAccidental(Expression accidental){
-    		this.accidental = accidental;
+    	public void addAccidental(int i){
+    	    this.numAccidental += i;
+    	}
+    	
+    	public void addOctave(int i){
+    	    this.numOctave += i;
     	}
     	
     	public void setNote(Expression note){
     		this.note = note;
-    	}
-    	
-    	public void setOctave(Expression octave){
-    		this.octave = octave;
     	}
     	
     	public void setLength(Expression length){
@@ -165,17 +168,7 @@ public interface Expression {
     	}
     	
     	public int getAccidental(){
-    	    if (this.accidental == null){
-    	        return 0;
-    	    }else{
-        	    if (this.accidental.toString().equals("^")){
-        	        return 1;
-        	    }else if (this.accidental.toString().equals("_")){
-        	        return -1;
-        	    }else if (this.accidental.toString().equals("=")){
-        	        return 2;
-        	    }else throw new RuntimeException("Illegal accidental");
-    	    }
+    	    return numAccidental;
     	}
     	
     	public String getNote(){
@@ -183,19 +176,7 @@ public interface Expression {
     	}
     	
     	public int getOctave(){
-    	    if (this.octave == null){
-                return 0;
-            }else{
-                int retOct = 0;
-                for (int i=0; i<this.octave.toString().length(); i++){
-                    if (this.octave.toString().substring(i, i+1).equals("'")){
-                        retOct++;
-                    }else if (this.octave.toString().substring(i, i+1).equals(",")){
-                        retOct--;
-                    }else throw new RuntimeException("Illegal accidental");
-                }
-                return retOct;
-            }
+    	    return numOctave;
     	}
     	
     	public float getLength(){
