@@ -142,10 +142,26 @@ public interface Expression {
     	    String lenStr = "";
     	    
     	    if (numAccidental == 1){
-    	        accStr = "'"
+    	        accStr = "^";
+    	    } else if (numAccidental == 2){
+    	        accStr = "^^";
+    	    } else if (numAccidental == -1){
+    	        accStr = "_";
+    	    } else if (numAccidental == -2){
+    	        accStr = "__";
     	    }
+    	    
+    	    if (numOctave == 1){
+                accStr = "'";
+            } else if (numOctave == 2){
+                accStr = "''";
+            } else if (numOctave == -1){
+                accStr = ",";
+            } else if (numOctave == -2){
+                accStr = ",,";
+            }
+    	    
     	    if (note!= null) noteStr = note.toString();
-    	    if (octave!= null) octStr = octave.toString();
     	    if (length!= null) lenStr = length.toString();
     	    
     		return "Single{" + accStr + noteStr + octStr + lenStr +"} ";
