@@ -146,6 +146,11 @@ public class Feeder {
 	    int octave=0;
 	    
 	    System.out.println("EXPNote: "+note);
+	    
+	    if(note.equals("z")){
+	        curTick[curVoice]+=(int)Math.round(length*this.defLen*12);
+	        return;
+	    }
 	    if (exp.getOctave() == 1){
 	        octave = 12;
 	    }else if (exp.getOctave() == -1){
