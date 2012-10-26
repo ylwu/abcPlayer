@@ -473,8 +473,12 @@ public class Parser {
 				    note.addOctave(-1);
 				}
 			} else if (token.getType().equals(Token.Type.LENGTH)){
+			    numOfLen ++;
 				note.setLength(setTokenExpression(token));
 			} else {}
+		}
+		if (numOfLen > 1){
+		    throw new IllegalArgumentException("Single Note has more than one length");
 		}
 		return note;
 	}

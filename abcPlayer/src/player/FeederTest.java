@@ -39,7 +39,7 @@ public class FeederTest {
         feeder.play();
     }
     
-    @Test
+    //@Test
     public void paddyTest() throws MidiUnavailableException, InvalidMidiDataException, IOException{
         Lexer lexer = new Lexer();
         lexer.tokenize("paddy.abc");
@@ -48,7 +48,7 @@ public class FeederTest {
         feeder.play();
     }
     
-    //@Test
+    @Test
     public void prelude() throws MidiUnavailableException, InvalidMidiDataException, IOException{
         Lexer lexer = new Lexer();
         lexer.tokenize("prelude.abc");

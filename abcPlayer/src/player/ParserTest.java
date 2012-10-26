@@ -83,4 +83,13 @@ public class ParserTest {
             System.out.println(p.toString());
         }
         
+        @Test
+        public void multipleLength() throws IOException{
+            Lexer l = new Lexer();
+            l.tokenize("parser_illegal_multipleLength");
+            System.out.println(l.toString());
+            Parser p = new Parser(l);
+            System.out.println(p.toString());
+        }
+        
     }
