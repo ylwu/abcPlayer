@@ -249,11 +249,7 @@ public class Parser {
 		    		triplet = false;
 		    		quadruplet = false;
 		    	} else if (duplet){
-		    		if (token.getType().equals(Token.Type.DUPLET) && pletCount == 1){
-		    			listNote.addAll(makeDuplet(noteToken));
-			       		noteToken = new ArrayList<Token>();
-			       		pletCount = 0;
-		    		} else if (i < count){
+		    		if (i < count){
 						pletCount++;
 						count = 0;
 				       	if (pletCount >= 2){
@@ -352,11 +348,7 @@ public class Parser {
 		    		triplet = false;
 		    		quadruplet = true;
 		    	} else if (quadruplet) {
-		    		if (token.getType().equals(Token.Type.QUADRUPLET) && pletCount == 3){
-		    			listNote.addAll(makeQuadruplet(noteToken));
-			       		noteToken = new ArrayList<Token>();
-			       		pletCount = 0;
-		    		}else if (i < count){
+		    		if (i < count){
 						pletCount++;
 						count = 0;
 				       	if (pletCount >= 4){
