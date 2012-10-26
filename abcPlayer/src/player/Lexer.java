@@ -5,6 +5,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Class that converts an .abc file into a Header object and a list of Token objects.
+ *
+ */
 public class Lexer {
     public Header header;
     public ArrayList<Token> tokenList;
@@ -18,7 +22,12 @@ public class Lexer {
         tokenList = new ArrayList<Token>();
         header = new Header();
     }
-        
+    
+    /**
+     * Converts the specified file into a list of tokens.
+     * @param file .abc file that is placed under the path specified by default_path field.
+     * @throws IOException
+     */
     public void tokenize(String file) throws IOException{
         //FileInputStream fstream = new FileInputStream(file);
         //DataInputStream in = new DataInputStream(fstream);
@@ -87,6 +96,10 @@ public class Lexer {
             }
         }
     
+    /**
+     * Generate tokens from a single line.
+     * @param str The string representing the entire line in the file.
+     */
     public void tokenizeLine(String str){
         index = 0;
         currentStr = str;
@@ -100,6 +113,9 @@ public class Lexer {
         return (index < currentStrLength );         
     }
     
+    /**
+     * Processes the next character in line and generates the Token it represents.
+     */
     private void getNextToken(){
         String s = currentStr.substring(index, index+1);
         if (s.matches("[abcdefgABCDEFG]")){
@@ -152,6 +168,10 @@ public class Lexer {
         index += 1;
     }
     
+    /**
+     * Returns the string that represents the list of tokens.
+     * @return The string that represents the value of the list of tokens.
+     */
     private String tokenString(){
         String TokenString = "";
         for (Token t : tokenList){
@@ -165,6 +185,11 @@ public class Lexer {
         return "Header: " + header.toString() + " $$$ " + tokenString();
     }
     
+    /**
+     * Converts a string that represents a fraction to a float
+     * @param str String representing the fraction in X/Y form
+     * @return Float value of the number
+     */
     private double lengthToNumber(String str){
         double N = 1.0;
         double D = 2.0;

@@ -23,7 +23,7 @@ public class LexerTest {
     public void TestLegalSingles() throws IOException{
         Lexer l = new Lexer();
         l.tokenize("lexer_legal_single.abc");
-        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Single X:1 V:[] $$$ A B C D E F G a b c d e f g | ^ _ = ' , [ ] z 0.0 9.0 0.5",
+        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Single X:1 V:[] $$$ A B C D   E F | G a b c d e f g |",
                 l.toString());
     }
     
@@ -39,7 +39,7 @@ public class LexerTest {
     public void TestLegalChords() throws IOException{
         Lexer l = new Lexer();
         l.tokenize("lexer_legal_chords.abc");
-        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Chords X:3 V:[] $$$ [ABC] [AB]",
+        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Chords X:3 V:[] $$$ [ABC] [AB]  |",
                 l.toString());
     }
     @Test
@@ -57,7 +57,7 @@ public class LexerTest {
     public void TestLegalBlahplets() throws IOException{
         Lexer l = new Lexer();
         l.tokenize("lexer_legal_plets.abc");
-        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Plets X:5 V:[] $$$ (2AB (3ABC (4ABCD (2A0.5B0.5",
+        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Plets X:5 V:[] $$$ (2AB (3ABC (4ABCD (2A0.5B0.5| (3EFG (2dE (4acd [c^de]",
                 l.toString());
         assertEquals(Token.Type.DUPLET, l.tokenList.get(0).getType());
     }
@@ -66,17 +66,17 @@ public class LexerTest {
     public void TestLegalVoices() throws IOException{
         Lexer l = new Lexer();
         l.tokenize("lexer_legal_voices.abc");
-        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Voices X:8 V:[1, 2, A] $$$ 1A B C D2A B C DAA B C D",
+        assertEquals("Header: C:unknown K:C L:1/8 M:4/4 Q:100 T:Legal Voices X:8 V:[1, 2, A] $$$ 1A B C D|2A B C D|AA B C D|",
                 l.toString());
         assertEquals(Token.Type.VOICE, l.tokenList.get(0).getType());
-        assertEquals(Token.Type.VOICE, l.tokenList.get(8).getType());
+        assertEquals(Token.Type.VOICE, l.tokenList.get(9).getType());
     }
     
     @Test
     public void TestMixedCases() throws IOException{
         Lexer l = new Lexer();
         l.tokenize("piece2.abc");
-        assertEquals("Header: C:unknown K:C L:1/4 M:4/4 Q:200 T: Piece No.2 X:2 V:[] $$$ [^Fe]0.5 [Fe]0.5 z0.5 [Fe]0.5 z0.5 [Fc]0.5 [Fe] |" +
+        assertEquals("Header: C:unknown K:C L:1/4 M:4/4 Q:200 T: Piece No.2 X:2 V:[] $$$ [^F0.5e0.5] [F0.5e0.5] z0.5 [F0.5e0.5] z0.5 [F0.5c0.5] [Fe] |" +
         		" [Gbg] z G z | c1.5 G0.5 z E | E0.5 a b _b0.5  a | (3Geg a' f0.5 g0.5 | z0.5 e c0.5 d0.5 b0.75 z0.75 |",
                 l.toString());
     }
