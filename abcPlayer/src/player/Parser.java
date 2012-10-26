@@ -260,6 +260,8 @@ public class Parser {
 				       		duplet = false;
 				       		listNote.addAll(makeDuplet(noteToken));
 				       		noteToken = new ArrayList<Token>();
+				       		noteToken.add(token);
+				       		pletCount = 0;
 				       	} else noteToken.add(token);
 				    } else if ((i==1 && count==1)){
 						pletCount++;
@@ -302,14 +304,23 @@ public class Parser {
 				       		triplet = false;
 				       		listNote.addAll(makeTriplet(noteToken));
 				       		noteToken = new ArrayList<Token>();
+				       		noteToken.add(token);
 				       		pletCount = 0;
 				       	} else {
 				       		noteToken.add(token);
 				       	}
 					} else if ((i==1 && count==1)){
 						pletCount++;
-						noteToken.add(token);
 				       	count = i;
+				       	if (pletCount >= 3){
+                            triplet = false;
+                            listNote.addAll(makeTriplet(noteToken));
+                            noteToken = new ArrayList<Token>();
+                            noteToken.add(token);
+                            pletCount = 0;
+                        } else {
+                            noteToken.add(token);
+                        }
 					} else {
 				       	count = i;
 				       	noteToken.add(token);
@@ -352,6 +363,7 @@ public class Parser {
 				       		quadruplet = false;
 				       		listNote.addAll(makeQuadruplet(noteToken));
 				       		noteToken = new ArrayList<Token>();
+				       		noteToken.add(token);
 				       		pletCount = 0;
 				       	} else {
 				       		noteToken.add(token);
@@ -361,6 +373,7 @@ public class Parser {
 				       	noteToken = new ArrayList<Token>();
 				       	noteToken.add(token);
 				       	count = i;
+				       	pletCount = 0;
 					} else {
 				       	count = i;
 				       	noteToken.add(token);
@@ -371,6 +384,7 @@ public class Parser {
 				       	noteToken = new ArrayList<Token>();
 				       	noteToken.add(token);
 				       	count = i;
+				       	
 				       	} else {
 				       	count = i;
 				       	noteToken.add(token);
