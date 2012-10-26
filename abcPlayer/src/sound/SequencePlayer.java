@@ -183,7 +183,7 @@ public class SequencePlayer {
             player.addNote(new Pitch('D').toMidiNote(), 13, 1);
             player.addNote(new Pitch('C').toMidiNote(), 14, 1);
 
-            System.out.println(player);
+            //System.out.println(player);
 
             // play!
             player.play();
