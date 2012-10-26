@@ -39,6 +39,10 @@ public interface Expression {
 			this.sections = sections;
 		}
 		
+		public String getVoiceName(){
+			return this.voiceName;
+		}
+		
 		public ArrayList<Token> getTokenInVoice (){
 			return this.tokenInVoice;
 		}

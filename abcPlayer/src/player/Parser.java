@@ -11,7 +11,7 @@ public class Parser {
 		this.tokenList = lexer.getTokenList();
 		this.lexer = lexer;
         this.header = lexer.getHeader();
-		this.parsedList = voiceMaker();		
+		this.parsedList = voiceMatcher(voiceMaker());		
 		for (Expression.Voice e: parsedList){
 			e.setSections(repeatedSection(sectionMaker(e.getTokenInVoice())));
 			ArrayList<Expression.Section> sections = e.getSections();
@@ -61,8 +61,53 @@ public class Parser {
 		return setVoice;
 	}
 	
+	private ArrayList<Expression.Voice> voiceMatcher (ArrayList<Expression.Voice> preMatchedVoices){
+		HashMap<String, ArrayList<Token>> map = new HashMap<String, ArrayList<Token>>();
+		for (Expression.Voice voice: preMatchedVoices){
+			String voiceName = voice.getVoiceName();
+			ArrayList<Token> voiceToken = voice.getTokenInVoice();
+			if (map.containsKey(voiceName)){
+				ArrayList<Token> existList = map.get(voiceName);
+				existList.addAll(voiceToken);
+				map.put(voiceName, existList);
+			} else {
+				map.put(voiceName, voiceToken);
+			}
+		}
+		ArrayList<Expression.Voice> newVoices = new ArrayList<Expression.Voice>();
+		Object[] voiceNames = map.keySet().toArray();
+		for (Object s: voiceNames){
+			String sString = (String) s;
+			Expression.Voice newVoice = new Expression.Voice(sString);
+			newVoice.setTokenInVoice(map.get(sString));
+			newVoices.add(newVoice);
+		}
+		return newVoices;
+	}
+	
 	private ArrayList<Expression.MajorSection> majorSectionMaker (ArrayList<Token> tokenList){
-		
+		ArrayList<Integer> indexOfDoubleBar = new ArrayList<Integer>();
+		indexOfDoubleBar.add(-2);
+		int length = tokenList.size();
+		for (int i=0; i<length; i++){
+			if (tokenList.get(i).getType().equals(Token.Type.LINE)){
+				if (tokenList.get(i+1).getType().equals(Token.Type.LINE)||tokenList.get(i+1).getType().equals(Token.Type.RIGHTBRA)){
+					indexOfDoubleBar.add(i);
+				}
+			}
+		}
+		ArrayList<Expression.MajorSection> listOfExpression = new ArrayList<Expression.MajorSection>();
+		int numberOfLine = indexOfDoubleBar.size();
+		for (int j=1; j<numberOfLine; j++){
+			int fromIndex = indexOfDoubleBar.get(j-1)+1;
+			int toIndex = indexOfDoubleBar.get(j);
+			ArrayList<Token> majorSection = new ArrayList<Token>();
+			for (int i=fromIndex; i<=toIndex; i++){
+			    majorSection.add(tokenList.get(i));
+			}
+			listOfExpression.add(new Expression.MajorSection(majorSection));
+		}
+		return listOfExpression;
 	}
 	
 	private ArrayList<Expression.Section> sectionMaker(ArrayList<Token> tokenList){
@@ -83,6 +128,7 @@ public class Parser {
 			for (int i=fromIndex; i<=toIndex; i++){
 			    section.add(tokenList.get(i));
 			}
+			System.out.println(section.toString());
 			listOfExpression.add(new Expression.Section(section));
 		}
 		return listOfExpression;
