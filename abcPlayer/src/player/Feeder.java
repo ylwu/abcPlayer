@@ -79,7 +79,7 @@ public class Feeder {
 		                fill += (((SingleNote)(((Chord)e).getNote().get(0))).getLength());
 		            }
 		        }
-		        if ((this.defMeter-fill)>=0.05){  // The unfortunate magic number 0.05 allows some small error buildup caused by float calculation.
+		        if (Math.abs(this.defMeter-fill*this.defLen)>=0.1){  // The unfortunate magic number 0.05 allows some small error buildup caused by float calculation.
 		            throw new RuntimeException("Ain't nobody got time for pickups");
 		        }
 		    }
@@ -111,7 +111,11 @@ public class Feeder {
 		    this.player = new SequencePlayer(Integer.parseInt(header.Q)*(int)Math.round(this.defLen/0.25), 12);
 		}else throw new RuntimeException("Illegal header input");
 		if (header.M != null){
-		    this.defMeter = lengthToNumber(header.M);
+		    if ((header.M.equals("C")) || (header.M.equals("C|"))){
+		        this.defMeter = 1;
+		    }else {
+		        this.defMeter = lengthToNumber(header.M);
+		    }
 		}
 		if (header.K != null){
 		    int hasLK = hasLegalKey(header.K);
@@ -146,11 +150,12 @@ public class Feeder {
 	    int octave=0;
 	    
 	    System.out.println("EXPNote: "+note);
-	    if (exp.getOctave() == 1){
-	        octave = 12;
-	    }else if (exp.getOctave() == -1){
-	        octave = -12;
+	    
+	    if(note.equals("z")){
+	        curTick[curVoice]+=(int)Math.round(length*this.defLen*12);
+	        return;
 	    }
+	    octave = exp.getOctave()*12;
 	    if (transpose==2){
 	        transpose=0;
 	    }else{
